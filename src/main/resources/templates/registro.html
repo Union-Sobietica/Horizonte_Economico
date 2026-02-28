@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Registro - Horizonte Económico</title>
+    <link rel="stylesheet" href="/css/app.css"/>
+</head>
+<body>
+<header class="header">
+    <div class="contenedor">
+        <div class="marca">
+            <div class="logo">HE</div>
+            <div class="titulo">
+                <h1>Horizonte Económico</h1>
+                <p>Alta de usuario</p>
+            </div>
+        </div>
+        <nav class="nav">
+            <a class="link" href="/">Inicio</a>
+            <a class="link" href="/login">Login</a>
+        </nav>
+    </div>
+</header>
+
+<main class="contenedor">
+    <section class="hero">
+        <h2>Registro</h2>
+
+        <p th:if="${errorGeneral}" class="texto-error" th:text="${errorGeneral}"></p>
+
+        <form class="form" method="post" th:action="@{/registro}" th:object="${registroSolicitud}">
+            <label class="label" for="email">Email</label>
+            <input class="input" id="email" type="email" th:field="*{email}" required/>
+            <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+
+            <label class="label" for="password">Contraseña</label>
+            <input class="input" id="password" type="password" th:field="*{password}" required/>
+            <div class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+
+            <label class="label" for="passwordRepetida">Repetir contraseña</label>
+            <input class="input" id="passwordRepetida" type="password" th:field="*{passwordRepetida}" required/>
+            <div class="error" th:if="${#fields.hasErrors('passwordRepetida')}" th:errors="*{passwordRepetida}"></div>
+
+            <button class="boton boton-primario" type="submit">Crear cuenta</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>

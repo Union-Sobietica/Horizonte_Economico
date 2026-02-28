@@ -20,6 +20,9 @@
         <nav class="nav">
             <a class="link" href="/swagger-ui/index.html">API Docs</a>
             <a class="link" href="/actuator/health">Health</a>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button class="link" type="submit">Cerrar Sesión</button>
+            </form>
         </nav>
     </div>
 </header>

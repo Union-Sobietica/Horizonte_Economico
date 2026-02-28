@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Acceso denegado</title>
+    <link rel="stylesheet" href="/css/app.css"/>
+</head>
+<body>
+<header class="header">
+    <div class="contenedor">
+        <div class="marca">
+            <div class="logo">HE</div>
+            <div class="titulo">
+                <h1>Horizonte Económico</h1>
+                <p>Seguridad</p>
+            </div>
+        </div>
+        <nav class="nav">
+            <a class="link" href="/">Inicio</a>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button class="link" type="submit">Cerrar Sesión</button>
+            </form>
+        </nav>
+    </div>
+</header>
+
+<main class="contenedor">
+    <section class="hero">
+        <h2>Acceso denegado</h2>
+        <p>No tienes permisos para acceder a esta sección.</p>
+    </section>
+</main>
+</body>
+</html>
