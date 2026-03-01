@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Categorías</title>
+    <link rel="stylesheet" href="/css/app.css"/>
+</head>
+<body>
+<header class="header">
+    <div class="contenedor">
+        <div class="marca">
+            <div class="logo">HE</div>
+            <div class="titulo">
+                <h1>Horizonte Económico</h1>
+                <p>Categorías</p>
+            </div>
+        </div>
+        <nav class="nav">
+            <a class="link" href="/">Inicio</a>
+            <a class="link" href="/usuario/ingresos">Ingresos</a>
+            <a class="link" href="/usuario/gastos">Gastos</a>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button class="link" type="submit">Salir</button>
+            </form>
+        </nav>
+    </div>
+</header>
+
+<main class="contenedor">
+    <section class="hero">
+        <h2>Crear categoría</h2>
+        <p th:if="${errorGeneral}" class="texto-error" th:text="${errorGeneral}"></p>
+
+        <form class="form" th:action="@{/usuario/categorias}" method="post" th:object="${categoriaCrearSolicitud}">
+            <label class="label" for="nombre">Nombre</label>
+            <input class="input" id="nombre" th:field="*{nombre}" required maxlength="60"/>
+            <div class="error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+
+            <label class="label" for="tipo">Tipo</label>
+            <select class="input" id="tipo" th:field="*{tipo}" required>
+                <option th:each="t : ${tiposCategoria}" th:value="${t}" th:text="${t}"></option>
+            </select>
+            <div class="error" th:if="${#fields.hasErrors('tipo')}" th:errors="*{tipo}"></div>
+
+            <button class="boton boton-primario" type="submit">Guardar</button>
+        </form>
+    </section>
+
+    <section class="hero">
+        <h2>Listado</h2>
+        <table class="tabla">
+            <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="c : ${categorias}">
+                <td th:text="${c.nombre}"></td>
+                <td th:text="${c.tipo}"></td>
+                <td class="td-accion">
+                    <form th:action="@{'/usuario/categorias/' + ${c.id} + '/borrar'}" method="post">
+                        <button class="boton boton-secundario" type="submit">Borrar</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

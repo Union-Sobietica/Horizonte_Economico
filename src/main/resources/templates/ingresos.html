@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Ingresos</title>
+    <link rel="stylesheet" href="/css/app.css"/>
+</head>
+<body>
+<header class="header">
+    <div class="contenedor">
+        <div class="marca">
+            <div class="logo">HE</div>
+            <div class="titulo">
+                <h1>Horizonte Económico</h1>
+                <p>Ingresos</p>
+            </div>
+        </div>
+        <nav class="nav">
+            <a class="link" href="/">Inicio</a>
+            <a class="link" href="/usuario/categorias">Categorías</a>
+            <a class="link" href="/usuario/gastos">Gastos</a>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button class="link" type="submit">Salir</button>
+            </form>
+        </nav>
+    </div>
+</header>
+
+<main class="contenedor">
+    <section class="hero">
+        <h2>Crear ingreso</h2>
+
+        <form class="form" th:action="@{/usuario/ingresos}" method="post" th:object="${ingresoCrearSolicitud}">
+            <label class="label" for="importe">Importe</label>
+            <input class="input" id="importe" type="number" step="0.01" min="0.01" th:field="*{importe}" required/>
+            <div class="error" th:if="${#fields.hasErrors('importe')}" th:errors="*{importe}"></div>
+
+            <label class="label" for="fecha">Fecha</label>
+            <input class="input" id="fecha" type="date" th:field="*{fecha}" required/>
+            <div class="error" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></div>
+
+            <label class="label" for="fuente">Fuente (opcional)</label>
+            <input class="input" id="fuente" th:field="*{fuente}" maxlength="120"/>
+
+            <button class="boton boton-primario" type="submit">Guardar</button>
+        </form>
+    </section>
+
+    <section class="hero">
+        <h2>Listado</h2>
+        <table class="tabla">
+            <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Importe</th>
+                <th>Fuente</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="i : ${ingresos}">
+                <td th:text="${i.fecha}"></td>
+                <td th:text="${i.importe}"></td>
+                <td th:text="${i.fuente}"></td>
+                <td class="td-accion">
+                    <form th:action="@{'/usuario/ingresos/' + ${i.id} + '/borrar'}" method="post">
+                        <button class="boton boton-secundario" type="submit">Borrar</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

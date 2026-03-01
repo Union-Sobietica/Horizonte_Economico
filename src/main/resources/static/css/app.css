@@ -188,3 +188,19 @@ body {
 .error { color: #b91c1c; font-weight: 700; font-size: 13px; }
 .texto-error { color: #b91c1c; font-weight: 700; }
 .texto-ok { color: var(--exito); font-weight: 700; }
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.tabla th, .tabla td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--borde);
+  text-align: left;
+}
+.tabla th { color: var(--muted); font-weight: 700; }
+.td-accion { width: 1%; white-space: nowrap; }
