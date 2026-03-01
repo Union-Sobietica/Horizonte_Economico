@@ -27,7 +27,13 @@
         <h2>Iniciar sesión</h2>
 
         <p th:if="${param.registro}" class="texto-ok">Registro completado. Inicia sesión.</p>
-        <p th:if="${param.error}" class="texto-error">Credenciales incorrectas.</p>
+        <p th:if="${param.error != null and param.error[0] == 'disabled'}" class="texto-error">
+            Usuario desactivado. Contacta con el administrador.
+        </p>
+
+        <p th:if="${param.error != null and param.error[0] == 'bad'}" class="texto-error">
+            Credenciales incorrectas.
+        </p>
         <p th:if="${param.logout}" class="texto-ok">Sesión cerrada.</p>
 
         <form class="form" method="post" th:action="@{/login}">

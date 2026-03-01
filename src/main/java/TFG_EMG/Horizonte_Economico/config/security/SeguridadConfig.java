@@ -33,6 +33,7 @@ public class SeguridadConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/", true)
+                        .failureHandler(new LoginFailureHandler())
                         .permitAll()
                 )
                 .logout(Customizer.withDefaults())

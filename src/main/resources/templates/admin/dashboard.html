@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin - Dashboard</title>
+    <link rel="stylesheet" href="/css/app.css"/>
+</head>
+<body>
+<header class="header">
+    <div class="contenedor">
+        <div class="marca">
+            <div class="logo">HE</div>
+            <div class="titulo">
+                <h1>Horizonte Económico</h1>
+                <p>Administración</p>
+            </div>
+        </div>
+        <div class="acciones">
+            <a class="boton boton-primario" href="/">Inicio</a>
+            <a class="boton boton-secundario" href="/admin/usuarios">Usuarios</a>
+            <form th:action="@{/logout}" method="post" class="form-inline">
+                <button class="boton boton-peligro" type="submit">Cerrar Sesión</button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<main class="contenedor">
+    <section class="hero">
+        <h2>Dashboard</h2>
+    </section>
+
+    <section class="grid">
+        <article class="card">
+            <h3>Total usuarios</h3>
+            <p th:text="${dashboard.totalUsuarios}"></p>
+        </article>
+        <article class="card">
+            <h3>Activos</h3>
+            <p th:text="${dashboard.activos}"></p>
+        </article>
+        <article class="card">
+            <h3>Inactivos</h3>
+            <p th:text="${dashboard.inactivos}"></p>
+        </article>
+        <article class="card">
+            <h3>Admins</h3>
+            <p th:text="${dashboard.admins}"></p>
+        </article>
+        <article class="card">
+            <h3>Usuarios</h3>
+            <p th:text="${dashboard.usuarios}"></p>
+        </article>
+    </section>
+</main>
+</body>
+</html>

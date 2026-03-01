@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin - Usuarios</title>
+    <link rel="stylesheet" href="/css/app.css"/>
+</head>
+<body>
+<header class="header">
+    <div class="contenedor">
+        <div class="marca">
+            <div class="logo">HE</div>
+            <div class="titulo">
+                <h1>Horizonte Económico</h1>
+                <p>Gestión de usuarios</p>
+            </div>
+        </div>
+        <div class="acciones">
+            <a class="boton boton-primario" href="/">Inicio</a>
+            <a class="boton boton-secundario" href="/admin">Dashboard</a>
+            <form th:action="@{/logout}" method="post" class="form-inline">
+                <button class="boton boton-peligro" type="submit">Cerrar Sesión</button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<main class="contenedor">
+    <section class="hero">
+        <h2>Usuarios</h2>
+        <table class="tabla">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Activo</th>
+                <th>Alta</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="u : ${usuarios}">
+                <td th:text="${u.id}"></td>
+                <td th:text="${u.email}"></td>
+                <td th:text="${u.rol}"></td>
+                <td th:text="${u.activo}"></td>
+                <td th:text="${u.createdAt}"></td>
+                <td class="td-accion">
+                    <form th:action="@{'/admin/usuarios/' + ${u.id}}" method="post" style="display:inline-grid; gap:6px;">
+                        <select class="input" name="rol">
+                            <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"
+                                    th:selected="${r} == ${u.rol}"></option>
+                        </select>
+                        <select class="input" name="activo">
+                            <option th:value="true" th:selected="${u.activo} == true">true</option>
+                            <option th:value="false" th:selected="${u.activo} == false">false</option>
+                        </select>
+                        <button class="boton boton-primario" type="submit">Actualizar</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>
