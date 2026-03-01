@@ -66,6 +66,7 @@ public class FinanzasControlador {
     @GetMapping("/ingresos")
     public String ingresos(Model model) {
         model.addAttribute("ingresos", ingresoServicio.listar());
+        model.addAttribute("categoriasIngreso", categoriaServicio.listarPorTipo(TipoCategoria.INGRESO));
         model.addAttribute("ingresoCrearSolicitud", new IngresoCrearSolicitud());
         return "ingresos";
     }
@@ -76,9 +77,17 @@ public class FinanzasControlador {
                                Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("ingresos", ingresoServicio.listar());
+            model.addAttribute("categoriasIngreso", categoriaServicio.listarPorTipo(TipoCategoria.INGRESO));
             return "ingresos";
         }
-        ingresoServicio.crear(ingresoCrearSolicitud);
+        try {
+            ingresoServicio.crear(ingresoCrearSolicitud);
+        } catch (RuntimeException ex) {
+            model.addAttribute("errorGeneral", ex.getMessage());
+            model.addAttribute("ingresos", ingresoServicio.listar());
+            model.addAttribute("categoriasIngreso", categoriaServicio.listarPorTipo(TipoCategoria.INGRESO));
+            return "ingresos";
+        }
         return "redirect:/usuario/ingresos";
     }
 

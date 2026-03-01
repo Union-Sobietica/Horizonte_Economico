@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Resumen mensual</title>
+    <link rel="stylesheet" href="/css/app.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<header class="header">
+    <div class="contenedor">
+        <div class="marca">
+            <div class="logo">HE</div>
+            <div class="titulo">
+                <h1>Horizonte Económico</h1>
+                <p>Resumen mensual</p>
+            </div>
+        </div>
+        <div class="acciones">
+            <a class="boton boton-primario" href="/">Inicio</a>
+            <a class="boton boton-secundario" href="/usuario/categorias">Categorías</a>
+            <a class="boton boton-secundario" href="/usuario/gastos">Gastos</a>
+            <a class="boton boton-secundario" href="/usuario/ingresos">Ingresos</a>
+            <form th:action="@{/logout}" method="post" class="form-inline">
+                <button class="boton boton-peligro" type="submit">Cerrar Sesión</button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<main class="contenedor">
+    <section class="hero">
+        <h2>Mes</h2>
+
+        <form class="form" th:action="@{/usuario/resumen}" method="get">
+            <label class="label" for="mes">Seleccionar mes (YYYY-MM)</label>
+            <input class="input" id="mes" name="mes" type="month" th:value="${mesSeleccionado}"/>
+            <button class="boton boton-primario" type="submit">Actualizar</button>
+        </form>
+    </section>
+
+    <section class="grid">
+        <article class="card">
+            <h3>Ingresos</h3>
+            <p th:text="${resumen.totalIngresos}"></p>
+        </article>
+        <article class="card">
+            <h3>Gastos</h3>
+            <p th:text="${resumen.totalGastos}"></p>
+        </article>
+        <article class="card">
+            <h3>Sobrante</h3>
+            <p th:text="${resumen.sobrante}"></p>
+        </article>
+    </section>
+
+    <section class="hero">
+        <h2>Distribución de gastos por categoría</h2>
+        <div class="chart-box">
+            <canvas id="pieGastos"></canvas>
+        </div>
+    </section>
+
+    <section class="hero">
+        <h2>Ingresos vs Gastos</h2>
+        <div class="chart-box">
+            <canvas id="barraTotales"></canvas>
+        </div>
+    </section>
+
+</main>
+
+<script th:inline="javascript">
+    const distribucion = /*[[${resumen.distribucionGastos}]]*/ [];
+
+    const labels = distribucion.map(x => x.categoria);
+    const dataTotales = distribucion.map(x => Number(x.total));
+
+    const totalIngresos = Number(/*[[${resumen.totalIngresos}]]*/ 0);
+    const totalGastos = Number(/*[[${resumen.totalGastos}]]*/ 0);
+
+    new Chart(document.getElementById('pieGastos'), {
+      type: 'pie',
+      data: {
+        labels,
+        datasets: [{ data: dataTotales }]
+      }
+    });
+
+    new Chart(document.getElementById('barraTotales'), {
+      type: 'bar',
+      data: {
+        labels: ['Ingresos', 'Gastos'],
+        datasets: [{ data: [totalIngresos, totalGastos] }]
+      },
+      options: {
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+</script>
+</body>
+</html>

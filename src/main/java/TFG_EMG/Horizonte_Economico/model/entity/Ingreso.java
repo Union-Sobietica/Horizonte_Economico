@@ -17,33 +17,40 @@ public class Ingreso {
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoria_id", nullable = false)
+    private Categoria categoria;
+
     @Column(name = "importe", nullable = false, precision = 12, scale = 2)
     private BigDecimal importe;
 
     @Column(name = "fecha", nullable = false)
     private LocalDate fecha;
 
-    @Column(name = "fuente", length = 120)
-    private String fuente;
+    @Column(name = "descripcion", length = 200)
+    private String descripcion;
 
     public Ingreso() {}
 
-    public Ingreso(Usuario usuario, BigDecimal importe, LocalDate fecha, String fuente) {
+    public Ingreso(Usuario usuario, Categoria categoria, BigDecimal importe, LocalDate fecha, String descripcion) {
         this.usuario = usuario;
+        this.categoria = categoria;
         this.importe = importe;
         this.fecha = fecha;
-        this.fuente = fuente;
+        this.descripcion = descripcion;
     }
 
     public Long getId() { return id; }
     public Usuario getUsuario() { return usuario; }
+    public Categoria getCategoria() { return categoria; }
     public BigDecimal getImporte() { return importe; }
     public LocalDate getFecha() { return fecha; }
-    public String getFuente() { return fuente; }
+    public String getDescripcion() { return descripcion; }
 
     public void setId(Long id) { this.id = id; }
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+    public void setCategoria(Categoria categoria) { this.categoria = categoria; }
     public void setImporte(BigDecimal importe) { this.importe = importe; }
     public void setFecha(LocalDate fecha) { this.fecha = fecha; }
-    public void setFuente(String fuente) { this.fuente = fuente; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 }

@@ -16,12 +16,12 @@
                 <p>Panel de administración</p>
             </div>
         </div>
-        <nav class="nav">
-            <a class="link" href="/">Inicio</a>
-            <form th:action="@{/logout}" method="post" style="display:inline;">
-                <button class="link" type="submit">Cerrar Sesión</button>
+        <div class="acciones">
+            <a class="boton boton-primario" href="/">Inicio</a>
+            <form th:action="@{/logout}" method="post" class="form-inline">
+                <button class="boton boton-peligro" type="submit">Cerrar Sesión</button>
             </form>
-        </nav>
+        </div>
     </div>
 </header>
 

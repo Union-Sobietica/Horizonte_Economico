@@ -1,6 +1,7 @@
 package TFG_EMG.Horizonte_Economico.service;
 
 import TFG_EMG.Horizonte_Economico.dto.IngresoCrearSolicitud;
+import TFG_EMG.Horizonte_Economico.model.entity.Categoria;
 import TFG_EMG.Horizonte_Economico.model.entity.Ingreso;
 import TFG_EMG.Horizonte_Economico.model.entity.Usuario;
 import TFG_EMG.Horizonte_Economico.repository.IngresoRepositorio;
@@ -14,10 +15,12 @@ public class IngresoServicio {
 
     private final IngresoRepositorio ingresoRepositorio;
     private final UsuarioActualServicio usuarioActualServicio;
+    private final CategoriaServicio categoriaServicio;
 
-    public IngresoServicio(IngresoRepositorio ingresoRepositorio, UsuarioActualServicio usuarioActualServicio) {
+    public IngresoServicio(IngresoRepositorio ingresoRepositorio, UsuarioActualServicio usuarioActualServicio, CategoriaServicio categoriaServicio) {
         this.ingresoRepositorio = ingresoRepositorio;
         this.usuarioActualServicio = usuarioActualServicio;
+        this.categoriaServicio = categoriaServicio;
     }
 
     public List<Ingreso> listar() {
@@ -28,7 +31,9 @@ public class IngresoServicio {
     @Transactional
     public void crear(IngresoCrearSolicitud solicitud) {
         Usuario u = usuarioActualServicio.obtenerUsuarioActual();
-        Ingreso ingreso = new Ingreso(u, solicitud.getImporte(), solicitud.getFecha(), normalizar(solicitud.getFuente()));
+        Categoria categoria = categoriaServicio.obtenerPropia(solicitud.getCategoriaId(), u.getId());
+
+        Ingreso ingreso = new Ingreso(u, categoria, solicitud.getImporte(), solicitud.getFecha(), normalizar(solicitud.getDescripcion()));
         ingresoRepositorio.save(ingreso);
     }
 

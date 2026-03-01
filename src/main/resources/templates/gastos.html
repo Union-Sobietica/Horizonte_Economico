@@ -16,14 +16,15 @@
                 <p>Gastos</p>
             </div>
         </div>
-        <nav class="nav">
-            <a class="link" href="/">Inicio</a>
-            <a class="link" href="/usuario/categorias">Categorías</a>
-            <a class="link" href="/usuario/ingresos">Ingresos</a>
-            <form th:action="@{/logout}" method="post" style="display:inline;">
-                <button class="link" type="submit">Salir</button>
+        <div class="acciones">
+            <a class="boton boton-primario" href="/">Inicio</a>
+            <a class="boton boton-secundario" href="/usuario/resumen">Resumen mensual</a>
+            <a class="boton boton-secundario" href="/usuario/categorias">Categorías</a>
+            <a class="boton boton-secundario" href="/usuario/ingresos">Ingresos</a>
+            <form th:action="@{/logout}" method="post" class="form-inline">
+                <button class="boton boton-peligro" type="submit">Cerrar Sesión</button>
             </form>
-        </nav>
+        </div>
     </div>
 </header>
 
@@ -75,7 +76,7 @@
                 <td th:text="${g.descripcion}"></td>
                 <td class="td-accion">
                     <form th:action="@{'/usuario/gastos/' + ${g.id} + '/borrar'}" method="post">
-                        <button class="boton boton-secundario" type="submit">Borrar</button>
+                        <button class="boton boton-peligro" type="submit">Borrar</button>
                     </form>
                 </td>
             </tr>

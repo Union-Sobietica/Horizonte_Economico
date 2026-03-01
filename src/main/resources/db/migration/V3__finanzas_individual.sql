@@ -17,16 +17,21 @@ CREATE INDEX idx_categorias_usuario ON categorias(usuario_id);
 CREATE TABLE ingresos (
                           id BIGINT PRIMARY KEY AUTO_INCREMENT,
                           usuario_id BIGINT NOT NULL,
+                          categoria_id BIGINT NOT NULL,
                           importe DECIMAL(12,2) NOT NULL,
                           fecha DATE NOT NULL,
-                          fuente VARCHAR(120) NULL,
+                          descripcion VARCHAR(200) NULL,
                           created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                           CONSTRAINT fk_ingresos_usuario
                               FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-                                  ON DELETE CASCADE
+                                  ON DELETE CASCADE,
+                          CONSTRAINT fk_ingresos_categoria
+                              FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+                                  ON DELETE RESTRICT
 );
 
 CREATE INDEX idx_ingresos_usuario_fecha ON ingresos(usuario_id, fecha);
+CREATE INDEX idx_ingresos_usuario_categoria ON ingresos(usuario_id, categoria_id);
 
 CREATE TABLE gastos (
                         id BIGINT PRIMARY KEY AUTO_INCREMENT,

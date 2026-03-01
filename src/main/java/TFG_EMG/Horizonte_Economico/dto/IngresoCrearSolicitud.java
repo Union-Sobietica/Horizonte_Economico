@@ -9,6 +9,9 @@ import java.time.LocalDate;
 
 public class IngresoCrearSolicitud {
 
+    @NotNull(message = "La categoría es obligatoria")
+    private Long categoriaId;
+
     @NotNull(message = "El importe es obligatorio")
     @DecimalMin(value = "0.01", message = "El importe debe ser mayor que 0")
     private BigDecimal importe;
@@ -16,14 +19,16 @@ public class IngresoCrearSolicitud {
     @NotNull(message = "La fecha es obligatoria")
     private LocalDate fecha;
 
-    @Size(max = 120, message = "La fuente no puede superar 120 caracteres")
-    private String fuente;
+    @Size(max = 200, message = "La descripción no puede superar 200 caracteres")
+    private String descripcion;
 
+    public Long getCategoriaId() { return categoriaId; }
     public BigDecimal getImporte() { return importe; }
     public LocalDate getFecha() { return fecha; }
-    public String getFuente() { return fuente; }
+    public String getDescripcion() { return descripcion; }
 
+    public void setCategoriaId(Long categoriaId) { this.categoriaId = categoriaId; }
     public void setImporte(BigDecimal importe) { this.importe = importe; }
     public void setFecha(LocalDate fecha) { this.fecha = fecha; }
-    public void setFuente(String fuente) { this.fuente = fuente; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 }
