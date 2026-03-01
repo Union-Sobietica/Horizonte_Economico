@@ -2,6 +2,7 @@ package TFG_EMG.Horizonte_Economico.service;
 
 import TFG_EMG.Horizonte_Economico.dto.CategoriaDistribucionDTO;
 import TFG_EMG.Horizonte_Economico.dto.ResumenMensualDTO;
+import TFG_EMG.Horizonte_Economico.dto.ResumenFamiliarDTO;
 import TFG_EMG.Horizonte_Economico.model.entity.Gasto;
 import TFG_EMG.Horizonte_Economico.model.entity.Ingreso;
 import TFG_EMG.Horizonte_Economico.model.entity.Usuario;
@@ -21,13 +22,16 @@ public class MetricaServicio {
     private final UsuarioActualServicio usuarioActualServicio;
     private final IngresoRepositorio ingresoRepositorio;
     private final GastoRepositorio gastoRepositorio;
+    private final FamiliaServicio familiaServicio;
 
     public MetricaServicio(UsuarioActualServicio usuarioActualServicio,
                            IngresoRepositorio ingresoRepositorio,
-                           GastoRepositorio gastoRepositorio) {
+                           GastoRepositorio gastoRepositorio,
+                           FamiliaServicio familiaServicio) {
         this.usuarioActualServicio = usuarioActualServicio;
         this.ingresoRepositorio = ingresoRepositorio;
         this.gastoRepositorio = gastoRepositorio;
+        this.familiaServicio = familiaServicio;
     }
 
     public ResumenMensualDTO resumenMensual(String mesYYYYMM) {
@@ -80,6 +84,41 @@ public class MetricaServicio {
 
         lista.sort(Comparator.comparing(CategoriaDistribucionDTO::getTotal).reversed());
         return lista;
+    }
+
+    public ResumenFamiliarDTO resumenFamiliar(String mesYYYYMM) {
+        YearMonth ym = parseMes(mesYYYYMM);
+        Usuario u = usuarioActualServicio.obtenerUsuarioActual();
+
+        LocalDate desde = ym.atDay(1);
+        LocalDate hasta = ym.atEndOfMonth();
+
+        List<Ingreso> ingresos = ingresoRepositorio.findAllByUsuarioIdAndFechaBetweenOrderByFechaDesc(u.getId(), desde, hasta);
+        List<Gasto> gastos = gastoRepositorio.findAllByUsuarioIdAndFechaBetweenOrderByFechaDesc(u.getId(), desde, hasta);
+
+        BigDecimal totalIngresosUsuario = ingresos.stream()
+                .map(Ingreso::getImporte)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalGastos = gastos.stream()
+                .map(Gasto::getImporte)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal extra = familiaServicio.ingresosFamiliaresExtra();
+        BigDecimal totalIngresosFamilia = totalIngresosUsuario.add(extra);
+        BigDecimal sobranteFamiliar = totalIngresosFamilia.subtract(totalGastos);
+
+        return new ResumenFamiliarDTO(
+                ym.toString(),
+                scale2(totalIngresosUsuario),
+                scale2(extra),
+                scale2(totalIngresosFamilia),
+                scale2(totalGastos),
+                scale2(sobranteFamiliar),
+                distribucionGastos(gastos, totalGastos)
+        );
     }
 
     private YearMonth parseMes(String mesYYYYMM) {

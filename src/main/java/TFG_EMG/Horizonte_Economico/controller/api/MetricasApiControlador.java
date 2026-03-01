@@ -1,6 +1,7 @@
 package TFG_EMG.Horizonte_Economico.controller.api;
 
 import TFG_EMG.Horizonte_Economico.dto.ResumenMensualDTO;
+import TFG_EMG.Horizonte_Economico.dto.ResumenFamiliarDTO;
 import TFG_EMG.Horizonte_Economico.service.MetricaServicio;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,5 +18,10 @@ public class MetricasApiControlador {
     @GetMapping("/mensual")
     public ResumenMensualDTO resumenMensual(@RequestParam(name = "mes", required = false) String mes) {
         return metricaServicio.resumenMensual(mes);
+    }
+
+    @GetMapping("/mensual-familiar")
+    public ResumenFamiliarDTO resumenFamiliar(@RequestParam(name = "mes", required = false) String mes) {
+        return metricaServicio.resumenFamiliar(mes);
     }
 }
