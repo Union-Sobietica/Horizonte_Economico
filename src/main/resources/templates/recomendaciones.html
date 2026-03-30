@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Recomendaciones inteligentes</title>
+    <link rel="stylesheet" href="/css/app.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+<header class="header">
+    <div class="contenedor">
+        <div class="marca">
+            <div class="logo">HE</div>
+            <div class="titulo">
+                <h1>Horizonte Económico</h1>
+                <p>Recomendaciones inteligentes</p>
+            </div>
+        </div>
+        <nav class="nav">
+            <a class="link" href="/">Inicio</a>
+            <a class="link" href="/usuario/resumen">Resumen individual</a>
+            <a class="link" href="/usuario/resumen-familia">Resumen familiar</a>
+            <form action="/logout" method="post" style="display:inline;">
+                <button class="link" type="submit">Salir</button>
+            </form>
+        </nav>
+    </div>
+</header>
+
+<main class="contenedor">
+    <section class="hero">
+        <h2>Generar recomendaciones</h2>
+
+        <form class="form" id="formRecomendaciones">
+            <label class="label" for="mes">Mes</label>
+            <input class="input" id="mes" name="mes" type="month" required/>
+            <button class="boton boton-primario" type="submit">Generar</button>
+        </form>
+    </section>
+
+    <section class="hero" id="estadoCarga" style="display:none;">
+        <h2>Generando recomendaciones</h2>
+        <div class="loading-box">
+            <div class="spinner"></div>
+            <p>Analizando tus datos financieros...</p>
+        </div>
+    </section>
+
+    <section class="hero" id="bloqueError" style="display:none;">
+        <h2>Error</h2>
+        <p id="mensajeError" class="texto-error"></p>
+    </section>
+
+    <section class="hero" id="bloqueResultado" style="display:none;">
+        <h2>Resultado</h2>
+        <div id="resultadoMarkdown" class="markdown-content"></div>
+    </section>
+</main>
+
+<script>
+    const form = document.getElementById('formRecomendaciones');
+    const estadoCarga = document.getElementById('estadoCarga');
+    const bloqueResultado = document.getElementById('bloqueResultado');
+    const bloqueError = document.getElementById('bloqueError');
+    const mensajeError = document.getElementById('mensajeError');
+    const resultadoMarkdown = document.getElementById('resultadoMarkdown');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const boton = form.querySelector('button[type="submit"]');
+
+      boton.disabled = true;
+      boton.textContent = 'Generando...';
+
+      const mes = document.getElementById('mes').value;
+
+      bloqueResultado.style.display = 'none';
+      bloqueError.style.display = 'none';
+      estadoCarga.style.display = 'block';
+      resultadoMarkdown.innerHTML = '';
+      mensajeError.textContent = '';
+
+      try {
+        const response = await fetch(`/api/v1/recomendaciones?mes=${encodeURIComponent(mes)}`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('No se pudieron generar las recomendaciones.');
+        }
+
+        const data = await response.json();
+
+        resultadoMarkdown.innerHTML = marked.parse(data.contenido || '');
+        bloqueResultado.style.display = 'block';
+      } catch (error) {
+        mensajeError.textContent = error.message || 'Ha ocurrido un error inesperado.';
+        bloqueError.style.display = 'block';
+      } finally {
+        estadoCarga.style.display = 'none';
+        boton.disabled = false;
+        boton.textContent = 'Generar';
+      }
+    });
+</script>
+</body>
+</html>

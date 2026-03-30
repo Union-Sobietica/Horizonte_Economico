@@ -27,9 +27,13 @@ public class SeguridadConfig {
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/actuator/health", "/actuator/info", "/actuator/metrics", "/actuator/metrics/**").permitAll()
 
+                        .requestMatchers("/usuario/recomendaciones").authenticated()
+                        .requestMatchers("/api/v1/recomendaciones/**").authenticated()
+
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
+
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/", true)
@@ -38,6 +42,7 @@ public class SeguridadConfig {
                 )
                 .logout(Customizer.withDefaults())
                 .exceptionHandling(ex -> ex.accessDeniedPage("/acceso-denegado"));
+
 
         return http.build();
     }

@@ -329,3 +329,117 @@ body {
   border-radius: 16px;
   padding: 14px;
 }
+
+.markdown-content {
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  padding: 18px;
+  line-height: 1.6;
+  color: var(--texto);
+  font-family: Calibri, Arial, sans-serif;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  margin-top: 0;
+  color: var(--texto);
+}
+
+.markdown-content h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.markdown-content p {
+  margin: 0 0 12px;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin: 0 0 14px 20px;
+  padding: 0;
+}
+
+.markdown-content li {
+  margin-bottom: 8px;
+}
+
+.markdown-content strong {
+  color: var(--primario);
+}
+
+.markdown-content code {
+  background: rgba(59, 130, 246, 0.08);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-family: Consolas, monospace;
+}
+
+.loading-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 4px solid rgba(59, 130, 246, 0.18);
+  border-top: 4px solid var(--secundario);
+  border-radius: 50%;
+  animation: giro 0.9s linear infinite;
+}
+
+@keyframes giro {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.markdown-content {
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  padding: 18px;
+  line-height: 1.6;
+  color: var(--texto);
+  font-family: Calibri, Arial, sans-serif;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  margin-top: 0;
+  color: var(--texto);
+}
+
+.markdown-content h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.markdown-content p {
+  margin: 0 0 12px;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin: 0 0 14px 20px;
+  padding: 0;
+}
+
+.markdown-content li {
+  margin-bottom: 8px;
+}
+
+.markdown-content strong {
+  color: var(--primario);
+}
