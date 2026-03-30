@@ -30,6 +30,9 @@ public class SeguridadConfig {
                         .requestMatchers("/usuario/recomendaciones").authenticated()
                         .requestMatchers("/api/v1/recomendaciones/**").authenticated()
 
+                        .requestMatchers("/usuario/ayudas").authenticated()
+                        .requestMatchers("/api/v1/ayudas/**").authenticated()
+
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

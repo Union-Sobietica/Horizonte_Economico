@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Ayudas</title>
+  <link rel="stylesheet" href="/css/app.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+<header class="header">
+  <div class="contenedor">
+    <div class="marca">
+      <div class="logo">HE</div>
+      <div class="titulo">
+        <h1>Horizonte Económico</h1>
+        <p>Ayudas Públicas</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a class="link" href="/">Inicio</a>
+      <a class="link" href="/usuario/resumen">Resumen individual</a>
+      <a class="link" href="/usuario/resumen-familia">Resumen familiar</a>
+      <form action="/logout" method="post" style="display:inline;">
+        <button class="link" type="submit">Salir</button>
+      </form>
+    </nav>
+  </div>
+</header>
+
+<main class="contenedor">
+
+  <section class="hero">
+    <button id="btnGenerar" class="boton boton-primario">
+      Analizar ayudas
+    </button>
+  </section>
+
+  <section id="estadoCarga" style="display:none;">
+    <div class="loading-box">
+      <div class="spinner"></div>
+      <p>Analizando situación familiar...</p>
+    </div>
+  </section>
+
+  <section id="resultado" style="display:none;">
+    <div id="contenido" class="markdown-content"></div>
+  </section>
+
+</main>
+
+<script>
+  const btn = document.getElementById('btnGenerar');
+  const estado = document.getElementById('estadoCarga');
+  const resultado = document.getElementById('resultado');
+  const contenido = document.getElementById('contenido');
+
+  btn.addEventListener('click', async () => {
+    estado.style.display = 'block';
+    resultado.style.display = 'none';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch('/api/v1/ayudas');
+      const data = await res.json();
+
+      contenido.innerHTML = marked.parse(data.contenido || '');
+      resultado.style.display = 'block';
+    } catch (e) {
+      contenido.innerHTML = "Error al generar ayudas";
+      resultado.style.display = 'block';
+    } finally {
+      estado.style.display = 'none';
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
