@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class IngresoServicio {
 
     private final IngresoRepositorio ingresoRepositorio;
@@ -43,6 +44,27 @@ public class IngresoServicio {
         Ingreso i = ingresoRepositorio.findByIdAndUsuarioId(id, u.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Ingreso no encontrado"));
         ingresoRepositorio.delete(i);
+    }
+
+    @Transactional
+    public void actualizar(Long id, IngresoCrearSolicitud solicitud) {
+        Usuario u = usuarioActualServicio.obtenerUsuarioActual();
+
+        Ingreso ingreso = ingresoRepositorio.findByIdAndUsuarioId(id, u.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Ingreso no encontrado"));
+
+        ingreso.setCategoria(categoriaServicio.obtenerPropia(solicitud.getCategoriaId(), u.getId()));
+        ingreso.setImporte(solicitud.getImporte());
+        ingreso.setFecha(solicitud.getFecha());
+        ingreso.setDescripcion(normalizar(solicitud.getDescripcion()));
+
+        ingresoRepositorio.save(ingreso);
+    }
+
+    public Ingreso obtenerPropio(Long id) {
+        Usuario u = usuarioActualServicio.obtenerUsuarioActual();
+        return ingresoRepositorio.findByIdAndUsuarioId(id, u.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Ingreso no encontrado"));
     }
 
     private String normalizar(String s) {

@@ -11,6 +11,7 @@ public class ResumenFamiliarDTO {
     private BigDecimal totalGastos;
     private BigDecimal sobranteFamiliar;
     private List<CategoriaDistribucionDTO> distribucionGastos;
+    private List<CategoriaResumenDTO> resumenCategorias;
 
     public ResumenFamiliarDTO() {}
 
@@ -20,7 +21,8 @@ public class ResumenFamiliarDTO {
                               BigDecimal totalIngresosFamilia,
                               BigDecimal totalGastos,
                               BigDecimal sobranteFamiliar,
-                              List<CategoriaDistribucionDTO> distribucionGastos) {
+                              List<CategoriaDistribucionDTO> distribucionGastos,
+                              List<CategoriaResumenDTO> resumenCategorias) {
         this.mes = mes;
         this.totalIngresosUsuario = totalIngresosUsuario;
         this.totalIngresosFamiliaresExtra = totalIngresosFamiliaresExtra;
@@ -28,6 +30,7 @@ public class ResumenFamiliarDTO {
         this.totalGastos = totalGastos;
         this.sobranteFamiliar = sobranteFamiliar;
         this.distribucionGastos = distribucionGastos;
+        this.resumenCategorias = resumenCategorias;
     }
 
     public String getMes() { return mes; }
@@ -37,6 +40,7 @@ public class ResumenFamiliarDTO {
     public BigDecimal getTotalGastos() { return totalGastos; }
     public BigDecimal getSobranteFamiliar() { return sobranteFamiliar; }
     public List<CategoriaDistribucionDTO> getDistribucionGastos() { return distribucionGastos; }
+    public List<CategoriaResumenDTO> getResumenCategorias() { return resumenCategorias; }
 
     public void setMes(String mes) { this.mes = mes; }
     public void setTotalIngresosUsuario(BigDecimal totalIngresosUsuario) { this.totalIngresosUsuario = totalIngresosUsuario; }
@@ -45,4 +49,5 @@ public class ResumenFamiliarDTO {
     public void setTotalGastos(BigDecimal totalGastos) { this.totalGastos = totalGastos; }
     public void setSobranteFamiliar(BigDecimal sobranteFamiliar) { this.sobranteFamiliar = sobranteFamiliar; }
     public void setDistribucionGastos(List<CategoriaDistribucionDTO> distribucionGastos) { this.distribucionGastos = distribucionGastos; }
+    public void setResumenCategorias(List<CategoriaResumenDTO> resumenCategorias) { this.resumenCategorias = resumenCategorias; }
 }

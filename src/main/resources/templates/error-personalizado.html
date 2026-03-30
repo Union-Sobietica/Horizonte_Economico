@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Admin - Horizonte Económico</title>
+    <title>Error</title>
     <link rel="stylesheet" href="/css/app.css"/>
 </head>
 <body>
@@ -13,22 +13,17 @@
             <div class="logo">HE</div>
             <div class="titulo">
                 <h1>Horizonte Económico</h1>
-                <p>Panel de administración</p>
+                <p>Error</p>
             </div>
-        </div>
-        <div class="acciones">
-            <a class="boton boton-primario" href="/">Inicio</a>
-            <form th:action="@{/logout}" method="post" class="form-inline">
-                <button class="boton boton-peligro" type="submit">Cerrar Sesión</button>
-            </form>
         </div>
     </div>
 </header>
 
 <main class="contenedor">
     <section class="hero">
-        <h2>ADMIN</h2>
-        <p>Acceso correcto: esta página solo debe ser visible para rol ADMIN.</p>
+        <h2 th:text="${titulo}">Error</h2>
+        <p th:text="${mensaje}">Ha ocurrido un error.</p>
+        <a class="boton boton-primario" href="/">Volver al inicio</a>
     </section>
 </main>
 </body>

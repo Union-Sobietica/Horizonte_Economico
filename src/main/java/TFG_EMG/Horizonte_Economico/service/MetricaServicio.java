@@ -1,14 +1,16 @@
 package TFG_EMG.Horizonte_Economico.service;
 
 import TFG_EMG.Horizonte_Economico.dto.CategoriaDistribucionDTO;
-import TFG_EMG.Horizonte_Economico.dto.ResumenMensualDTO;
 import TFG_EMG.Horizonte_Economico.dto.ResumenFamiliarDTO;
+import TFG_EMG.Horizonte_Economico.dto.ResumenMensualDTO;
+import TFG_EMG.Horizonte_Economico.dto.CategoriaResumenDTO;
 import TFG_EMG.Horizonte_Economico.model.entity.Gasto;
 import TFG_EMG.Horizonte_Economico.model.entity.Ingreso;
 import TFG_EMG.Horizonte_Economico.model.entity.Usuario;
 import TFG_EMG.Horizonte_Economico.repository.GastoRepositorio;
 import TFG_EMG.Horizonte_Economico.repository.IngresoRepositorio;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -17,6 +19,7 @@ import java.time.YearMonth;
 import java.util.*;
 
 @Service
+@Transactional(readOnly = true)
 public class MetricaServicio {
 
     private final UsuarioActualServicio usuarioActualServicio;
@@ -58,7 +61,14 @@ public class MetricaServicio {
 
         List<CategoriaDistribucionDTO> distribucion = distribucionGastos(gastos, totalGastos);
 
-        return new ResumenMensualDTO(ym.toString(), scale2(totalIngresos), scale2(totalGastos), scale2(sobrante), distribucion);
+        return new ResumenMensualDTO(
+                ym.toString(),
+                scale2(totalIngresos),
+                scale2(totalGastos),
+                scale2(sobrante),
+                distribucion,
+                resumenPorCategorias(ingresos, gastos)
+        );
     }
 
     private List<CategoriaDistribucionDTO> distribucionGastos(List<Gasto> gastos, BigDecimal totalGastos) {
@@ -117,8 +127,62 @@ public class MetricaServicio {
                 scale2(totalIngresosFamilia),
                 scale2(totalGastos),
                 scale2(sobranteFamiliar),
-                distribucionGastos(gastos, totalGastos)
+                distribucionGastos(gastos, totalGastos),
+                resumenPorCategoriasFamiliar(ingresos, gastos, extra)
         );
+    }
+
+    private List<CategoriaResumenDTO> resumenPorCategoriasFamiliar(List<Ingreso> ingresos,
+                                                                   List<Gasto> gastos,
+                                                                   BigDecimal ingresosFamiliaresExtra) {
+        List<CategoriaResumenDTO> resultado = resumenPorCategorias(ingresos, gastos);
+
+        if (ingresosFamiliaresExtra != null && ingresosFamiliaresExtra.compareTo(BigDecimal.ZERO) > 0) {
+            resultado.add(new CategoriaResumenDTO(
+                    "Ingresos familiares extra",
+                    "INGRESO_FAMILIAR",
+                    scale2(ingresosFamiliaresExtra)
+            ));
+        }
+
+        return resultado;
+    }
+
+    private List<CategoriaResumenDTO> resumenPorCategorias(List<Ingreso> ingresos, List<Gasto> gastos) {
+        Map<String, BigDecimal> ingresosPorCategoria = new LinkedHashMap<>();
+        Map<String, BigDecimal> gastosPorCategoria = new LinkedHashMap<>();
+
+        for (Ingreso i : ingresos) {
+            String nombre = (i.getCategoria() != null) ? i.getCategoria().getNombre() : "Sin categoría";
+            BigDecimal importe = i.getImporte() == null ? BigDecimal.ZERO : i.getImporte();
+            ingresosPorCategoria.merge(nombre, importe, BigDecimal::add);
+        }
+
+        for (Gasto g : gastos) {
+            String nombre = (g.getCategoria() != null) ? g.getCategoria().getNombre() : "Sin categoría";
+            BigDecimal importe = g.getImporte() == null ? BigDecimal.ZERO : g.getImporte();
+            gastosPorCategoria.merge(nombre, importe, BigDecimal::add);
+        }
+
+        List<CategoriaResumenDTO> resultado = new ArrayList<>();
+
+        for (Map.Entry<String, BigDecimal> e : ingresosPorCategoria.entrySet()) {
+            resultado.add(new CategoriaResumenDTO(
+                    e.getKey(),
+                    "INGRESO",
+                    scale2(e.getValue())
+            ));
+        }
+
+        for (Map.Entry<String, BigDecimal> e : gastosPorCategoria.entrySet()) {
+            resultado.add(new CategoriaResumenDTO(
+                    e.getKey(),
+                    "GASTO",
+                    scale2(e.getValue())
+            ));
+        }
+
+        return resultado;
     }
 
     private YearMonth parseMes(String mesYYYYMM) {

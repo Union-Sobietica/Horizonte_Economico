@@ -27,6 +27,9 @@ public class Usuario {
     @Column(name = "created_at", nullable = false, updatable = false, insertable = false)
     private Instant createdAt;
 
+    @Column(name = "debe_cambiar_password", nullable = false)
+    private Boolean debeCambiarPassword = false;
+
     public Usuario() {}
 
     public Usuario(String email, String passwordHash, RolUsuario rol) {
@@ -42,10 +45,12 @@ public class Usuario {
     public RolUsuario getRol() { return rol; }
     public Boolean getActivo() { return activo; }
     public Instant getCreatedAt() { return createdAt; }
+    public Boolean getDebeCambiarPassword() { return debeCambiarPassword; }
 
     public void setId(Long id) { this.id = id; }
     public void setEmail(String email) { this.email = email; }
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
     public void setRol(RolUsuario rol) { this.rol = rol; }
     public void setActivo(Boolean activo) { this.activo = activo; }
+    public void setDebeCambiarPassword(Boolean debeCambiarPassword) { this.debeCambiarPassword = debeCambiarPassword; }
 }

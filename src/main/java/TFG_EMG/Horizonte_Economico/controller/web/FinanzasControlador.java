@@ -97,6 +97,37 @@ public class FinanzasControlador {
         return "redirect:/usuario/ingresos";
     }
 
+    @GetMapping("/ingresos/{id}/editar")
+    public String editarIngresoForm(@PathVariable Long id, Model model) {
+        var ingreso = ingresoServicio.obtenerPropio(id);
+
+        IngresoCrearSolicitud solicitud = new IngresoCrearSolicitud();
+        solicitud.setCategoriaId(ingreso.getCategoria().getId());
+        solicitud.setImporte(ingreso.getImporte());
+        solicitud.setFecha(ingreso.getFecha());
+        solicitud.setDescripcion(ingreso.getDescripcion());
+
+        model.addAttribute("ingresoId", id);
+        model.addAttribute("categoriasIngreso", categoriaServicio.listarPorTipo(TipoCategoria.INGRESO));
+        model.addAttribute("ingresoCrearSolicitud", solicitud);
+        return "editar-ingreso";
+    }
+
+    @PostMapping("/ingresos/{id}/editar")
+    public String editarIngreso(@PathVariable Long id,
+                                @Valid @ModelAttribute IngresoCrearSolicitud ingresoCrearSolicitud,
+                                BindingResult bindingResult,
+                                Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("ingresoId", id);
+            model.addAttribute("categoriasIngreso", categoriaServicio.listarPorTipo(TipoCategoria.INGRESO));
+            return "editar-ingreso";
+        }
+
+        ingresoServicio.actualizar(id, ingresoCrearSolicitud);
+        return "redirect:/usuario/ingresos";
+    }
+
     @GetMapping("/gastos")
     public String gastos(Model model) {
         model.addAttribute("gastos", gastoServicio.listar());
@@ -128,6 +159,37 @@ public class FinanzasControlador {
     @PostMapping("/gastos/{id}/borrar")
     public String borrarGasto(@PathVariable Long id) {
         gastoServicio.borrar(id);
+        return "redirect:/usuario/gastos";
+    }
+
+    @GetMapping("/gastos/{id}/editar")
+    public String editarGastoForm(@PathVariable Long id, Model model) {
+        var gasto = gastoServicio.obtenerPropio(id);
+
+        GastoCrearSolicitud solicitud = new GastoCrearSolicitud();
+        solicitud.setCategoriaId(gasto.getCategoria().getId());
+        solicitud.setImporte(gasto.getImporte());
+        solicitud.setFecha(gasto.getFecha());
+        solicitud.setDescripcion(gasto.getDescripcion());
+
+        model.addAttribute("gastoId", id);
+        model.addAttribute("categoriasGasto", categoriaServicio.listarPorTipo(TipoCategoria.GASTO));
+        model.addAttribute("gastoCrearSolicitud", solicitud);
+        return "editar-gasto";
+    }
+
+    @PostMapping("/gastos/{id}/editar")
+    public String editarGasto(@PathVariable Long id,
+                              @Valid @ModelAttribute GastoCrearSolicitud gastoCrearSolicitud,
+                              BindingResult bindingResult,
+                              Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("gastoId", id);
+            model.addAttribute("categoriasGasto", categoriaServicio.listarPorTipo(TipoCategoria.GASTO));
+            return "editar-gasto";
+        }
+
+        gastoServicio.actualizar(id, gastoCrearSolicitud);
         return "redirect:/usuario/gastos";
     }
 }

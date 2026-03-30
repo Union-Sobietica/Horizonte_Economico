@@ -8,24 +8,28 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-<header class="header">
-    <div class="contenedor">
-        <div class="marca">
-            <div class="logo">HE</div>
-            <div class="titulo">
-                <h1>Horizonte Económico</h1>
-                <p>Resumen mensual</p>
+<header class="header header-app">
+    <div class="contenedor header-app-inner">
+        <a href="/" class="brand-link">
+            <div class="brand-logo-wrap brand-logo-wrap-app">
+                <img src="/images/logo-horizonte.png" alt="Horizonte Económico" class="brand-logo"/>
             </div>
+        </a>
+
+        <div class="header-app-title">
+            <h1>Horizonte Económico</h1>
+            <p>Resumen mensual</p>
         </div>
-        <div class="acciones">
-            <a class="boton boton-primario" href="/">Inicio</a>
-            <a class="boton boton-secundario" href="/usuario/categorias">Categorías</a>
-            <a class="boton boton-secundario" href="/usuario/gastos">Gastos</a>
-            <a class="boton boton-secundario" href="/usuario/ingresos">Ingresos</a>
+
+        <nav class="nav nav-app">
+            <a class="link link-app" href="/">Inicio</a>
+            <a class="link link-app" href="/usuario/categorias">Categorías</a>
+            <a class="link link-app" href="/usuario/gastos">Gastos</a>
+            <a class="link link-app" href="/usuario/ingresos">Ingresos</a>
             <form th:action="@{/logout}" method="post" class="form-inline">
-                <button class="boton boton-peligro" type="submit">Cerrar Sesión</button>
+                <button class="boton boton-peligro" type="submit">Cerrar sesión</button>
             </form>
-        </div>
+        </nav>
     </div>
 </header>
 
@@ -63,40 +67,71 @@
     </section>
 
     <section class="hero">
-        <h2>Ingresos vs Gastos</h2>
+        <h2>Ingresos vs Gastos por categoría</h2>
         <div class="chart-box">
             <canvas id="barraTotales"></canvas>
         </div>
     </section>
-
 </main>
 
 <script th:inline="javascript">
     const distribucion = /*[[${resumen.distribucionGastos}]]*/ [];
+    const labelsPie = distribucion.map(x => x.categoria);
+    const dataPie = distribucion.map(x => Number(x.total));
 
-    const labels = distribucion.map(x => x.categoria);
-    const dataTotales = distribucion.map(x => Number(x.total));
+    const resumenCategorias = /*[[${resumen.resumenCategorias}]]*/ [];
+    const labels = resumenCategorias.map(x => x.categoria);
 
-    const totalIngresos = Number(/*[[${resumen.totalIngresos}]]*/ 0);
-    const totalGastos = Number(/*[[${resumen.totalGastos}]]*/ 0);
+    const ingresos = resumenCategorias.filter(x => x.tipo === 'INGRESO');
+    const gastos = resumenCategorias.filter(x => x.tipo === 'GASTO');
 
     new Chart(document.getElementById('pieGastos'), {
-      type: 'pie',
-      data: {
-        labels,
-        datasets: [{ data: dataTotales }]
-      }
+        type: 'pie',
+        data: {
+            labels: labelsPie,
+            datasets: [{
+                data: dataPie
+            }]
+        }
     });
 
     new Chart(document.getElementById('barraTotales'), {
-      type: 'bar',
-      data: {
-        labels: ['Ingresos', 'Gastos'],
-        datasets: [{ data: [totalIngresos, totalGastos] }]
-      },
-      options: {
-        scales: { y: { beginAtZero: true } }
-      }
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [
+                {
+                    label: 'Ingresos',
+                    data: labels.map(l => {
+                        const item = ingresos.find(i => i.categoria === l);
+                        return item ? Number(item.total) : 0;
+                    }),
+                    backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                    borderColor: 'rgba(16, 185, 129, 1)',
+                    borderWidth: 1,
+                    borderRadius: 6
+                },
+                {
+                    label: 'Gastos',
+                    data: labels.map(l => {
+                        const item = gastos.find(g => g.categoria === l);
+                        return item ? Number(item.total) : 0;
+                    }),
+                    backgroundColor: 'rgba(220, 38, 38, 0.7)',
+                    borderColor: 'rgba(220, 38, 38, 1)',
+                    borderWidth: 1,
+                    borderRadius: 6
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
     });
 </script>
 </body>

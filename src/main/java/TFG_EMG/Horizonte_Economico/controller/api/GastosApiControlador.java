@@ -35,4 +35,11 @@ public class GastosApiControlador {
         gastoServicio.borrar(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> actualizar(@PathVariable Long id,
+                                           @Valid @RequestBody GastoCrearSolicitud solicitud) {
+        gastoServicio.actualizar(id, solicitud);
+        return ResponseEntity.noContent().build();
+    }
 }

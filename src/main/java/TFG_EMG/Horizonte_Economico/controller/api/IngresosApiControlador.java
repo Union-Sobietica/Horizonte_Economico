@@ -35,4 +35,11 @@ public class IngresosApiControlador {
         ingresoServicio.borrar(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> actualizar(@PathVariable Long id,
+                                           @Valid @RequestBody IngresoCrearSolicitud solicitud) {
+        ingresoServicio.actualizar(id, solicitud);
+        return ResponseEntity.noContent().build();
+    }
 }

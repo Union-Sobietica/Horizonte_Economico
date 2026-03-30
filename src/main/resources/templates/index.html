@@ -1,77 +1,219 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Horizonte Económico</title>
-
+    <meta name="description" content="Aplicación web para la gestión de finanzas del hogar, análisis económico familiar y recomendaciones inteligentes."/>
     <link rel="stylesheet" href="/css/app.css"/>
 </head>
-<body>
-<header class="header">
-    <div class="contenedor">
-        <div class="marca">
-            <div class="logo">HE</div>
-            <div class="titulo">
-                <h1>Horizonte Económico</h1>
-                <p>Gestión de finanzas del hogar</p>
+<body class="landing-page">
+
+<header class="header header-landing">
+    <div class="contenedor header-landing-inner">
+        <a href="/" class="brand-link">
+            <img src="/images/logo-horizonte.png" alt="Horizonte Económico" class="brand-logo"/>
+        </a>
+
+        <nav class="nav nav-landing">
+            <div sec:authorize="isAnonymous()" class="nav-auth">
+                <a class="link" href="/login">Iniciar sesión</a>
+                <a class="boton boton-primario" href="/registro">Registrarse</a>
             </div>
-        </div>
-        <nav class="nav">
-            <a class="link" href="/swagger-ui/index.html">API Docs</a>
-            <a class="link" href="/actuator/health">Health</a>
+
+            <div sec:authorize="isAuthenticated()" class="nav-auth">
+                <a class="link" href="/usuario/resumen">Resumen</a>
+                <a class="link" href="/usuario/familia">Familia</a>
+                <a class="link" href="/usuario/recomendaciones">Recomendaciones</a>
+                <a class="link" href="/usuario/ayudas">Ayudas</a>
+
+                <a sec:authorize="hasRole('ADMIN')" class="link" href="/admin">Admin</a>
+
+                <form th:action="@{/logout}" method="post" class="form-inline">
+                    <button class="boton boton-peligro" type="submit">Cerrar sesión</button>
+                </form>
+            </div>
         </nav>
-        <div class="acciones">
-            <a class="boton boton-secundario" href="/usuario/resumen">Resumen mensual</a>
-            <a class="boton boton-secundario" href="/usuario/resumen-familia">Resumen familiar</a>
-            <a class="boton boton-secundario" href="/usuario/recomendaciones">Recomendaciones de IA</a>
-            <a class="boton boton-secundario" href="/usuario/ayudas">Ayudas con IA</a>
-            <form th:action="@{/logout}" method="post" class="form-inline">
-                <button class="boton boton-peligro" type="submit">Cerrar Sesión</button>
-            </form>
-        </div>
     </div>
 </header>
 
-<main class="contenedor">
-    <section class="hero">
-        <h2>Control, análisis y recomendaciones</h2>
-        <p>
-            Registro de ingresos y gastos, cálculo de sobrante mensual, distribución por categorías,
-            resultados individuales y familiares, gráficos interactivos y módulos de recomendaciones.
-        </p>
+<main>
+    <section class="hero hero-landing">
+        <div class="contenedor hero-grid">
+            <div class="hero-copy">
+                <span class="eyebrow">Gestión financiera doméstica</span>
+                <h1>Controla tu economía personal y familiar con una visión clara y útil</h1>
+                <p class="hero-texto">
+                    Horizonte Económico centraliza ingresos, gastos y categorías, calcula métricas mensuales,
+                    analiza la situación familiar y genera recomendaciones inteligentes para ayudarte a tomar mejores decisiones.
+                </p>
 
-        <div class="acciones">
-            <a class="boton boton-primario" href="#">Empezar</a>
-            <a class="boton boton-secundario" href="#">Ver demo</a>
+                <div class="hero-acciones" sec:authorize="isAnonymous()">
+                    <a class="boton boton-primario" href="/registro">Crear cuenta</a>
+                    <a class="boton boton-secundario" href="/login">Iniciar sesión</a>
+                </div>
+
+                <div class="hero-acciones" sec:authorize="isAuthenticated()">
+                    <a class="boton boton-primario" href="/usuario/resumen">Ir al resumen mensual</a>
+                    <a class="boton boton-secundario" href="/usuario/recomendaciones">Ver recomendaciones IA</a>
+                </div>
+
+                <div class="hero-metricas">
+                    <div class="mini-kpi">
+                        <strong>Finanzas individuales</strong>
+                        <span>Ingresos, gastos y sobrante mensual</span>
+                    </div>
+                    <div class="mini-kpi">
+                        <strong>Visión familiar</strong>
+                        <span>Comparación y análisis del hogar</span>
+                    </div>
+                    <div class="mini-kpi">
+                        <strong>Asistencia inteligente</strong>
+                        <span>Consejos de ahorro y posibles ayudas</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-panel">
+                <div class="panel-demo">
+                    <div class="panel-demo-head">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+
+                    <div class="panel-demo-body">
+                        <div class="demo-balance">
+                            <span class="demo-label">Balance mensual</span>
+                            <strong>+ 350,00 €</strong>
+                            <small>Situación estable con margen de ahorro</small>
+                        </div>
+
+                        <div class="demo-bars">
+                            <div class="demo-bar-item">
+                                <span>Ingresos</span>
+                                <div class="demo-bar">
+                                    <div class="demo-bar-fill demo-bar-fill-1"></div>
+                                </div>
+                            </div>
+                            <div class="demo-bar-item">
+                                <span>Gastos</span>
+                                <div class="demo-bar">
+                                    <div class="demo-bar-fill demo-bar-fill-2"></div>
+                                </div>
+                            </div>
+                            <div class="demo-bar-item">
+                                <span>Ahorro</span>
+                                <div class="demo-bar">
+                                    <div class="demo-bar-fill demo-bar-fill-3"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="demo-card-list">
+                            <div class="demo-card-mini">
+                                <strong>Resumen individual</strong>
+                                <span>Análisis mensual automático</span>
+                            </div>
+                            <div class="demo-card-mini">
+                                <strong>Resumen familiar</strong>
+                                <span>Ingresos agregados del hogar</span>
+                            </div>
+                            <div class="demo-card-mini">
+                                <strong>IA aplicada</strong>
+                                <span>Recomendaciones y ayudas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <section class="grid">
-        <article class="card">
-            <h3>Perfil financiero</h3>
-            <p>Ingresos, gastos, categorías y métricas mensuales.</p>
-            <span class="tag exito">Sobrante</span>
-        </article>
+    <section class="section section-light">
+        <div class="contenedor">
+            <div class="section-heading">
+                <span class="eyebrow">Qué ofrece la aplicación</span>
+                <h2>Una plataforma orientada a la economía real del hogar</h2>
+                <p>
+                    La aplicación combina registro de datos, cálculo automático, visualización y asistencia inteligente
+                    en una única interfaz.
+                </p>
+            </div>
 
-        <article class="card">
-            <h3>Familia</h3>
-            <p>Agregación de datos por unidad familiar y comparación de resultados.</p>
-            <span class="tag aviso">Ayudas</span>
-        </article>
+            <div class="feature-grid">
+                <article class="feature-card">
+                    <div class="feature-icon">01</div>
+                    <h3>Seguimiento financiero</h3>
+                    <p>Gestiona categorías, ingresos y gastos con persistencia por usuario y estructura clara.</p>
+                </article>
 
-        <article class="card">
-            <h3>Panel de administración</h3>
-            <p>Gestión de usuarios, estadísticas y supervisión del sistema.</p>
-            <span class="tag neutro">ADMIN</span>
-        </article>
+                <article class="feature-card">
+                    <div class="feature-icon">02</div>
+                    <h3>Análisis mensual</h3>
+                    <p>Calcula sobrante, distribución del gasto y métricas útiles para interpretar la situación económica.</p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">03</div>
+                    <h3>Perspectiva familiar</h3>
+                    <p>Amplía el análisis al contexto del hogar mediante miembros familiares e ingresos agregados.</p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">04</div>
+                    <h3>Recomendaciones IA</h3>
+                    <p>Obtén sugerencias estructuradas de ahorro y optimización financiera adaptadas a tus datos.</p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">05</div>
+                    <h3>Ayudas potenciales</h3>
+                    <p>Consulta orientación sobre posibles ayudas públicas a partir del perfil familiar registrado.</p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">06</div>
+                    <h3>Administración</h3>
+                    <p sec:authorize="hasRole('ADMIN')">Gestiona usuarios, estados y roles desde el panel de administración.</p>
+                    <p sec:authorize="!hasRole('ADMIN')">El sistema dispone de un panel de administración para supervisión y gestión interna.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-cta">
+        <div class="contenedor cta-box">
+            <div>
+                <span class="eyebrow">Horizonte Económico</span>
+                <h2>Finanzas del hogar con estructura, contexto y apoyo inteligente</h2>
+                <p>Diseñado para transformar datos dispersos en decisiones más claras.</p>
+            </div>
+
+            <div class="cta-actions" sec:authorize="isAnonymous()">
+                <a class="boton boton-primario" href="/registro">Empezar ahora</a>
+                <a class="boton boton-secundario" href="/login">Acceder</a>
+            </div>
+
+            <div class="cta-actions" sec:authorize="isAuthenticated()">
+                <a class="boton boton-primario" href="/usuario/resumen">Abrir panel</a>
+            </div>
+        </div>
     </section>
 </main>
 
-<footer class="footer">
-    <div class="contenedor">
+<footer class="footer footer-landing">
+    <div class="contenedor footer-landing-inner">
         <small>TFG — Esteban Martín González</small>
+
+        <div class="footer-links">
+            <a sec:authorize="hasRole('ADMIN')" href="/admin">Administración</a>
+            <a href="/swagger-ui/index.html">API Docs</a>
+            <a href="/actuator/health">Health</a>
+        </div>
     </div>
 </footer>
+
 </body>
 </html>

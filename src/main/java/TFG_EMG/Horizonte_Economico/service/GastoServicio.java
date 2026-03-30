@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class GastoServicio {
 
     private final GastoRepositorio gastoRepositorio;
@@ -51,6 +52,29 @@ public class GastoServicio {
         Gasto g = gastoRepositorio.findByIdAndUsuarioId(id, u.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Gasto no encontrado"));
         gastoRepositorio.delete(g);
+    }
+
+    @Transactional
+    public void actualizar(Long id, GastoCrearSolicitud solicitud) {
+        Usuario u = usuarioActualServicio.obtenerUsuarioActual();
+
+        Gasto gasto = gastoRepositorio.findByIdAndUsuarioId(id, u.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Gasto no encontrado"));
+
+        Categoria categoria = categoriaServicio.obtenerPropia(solicitud.getCategoriaId(), u.getId());
+
+        gasto.setCategoria(categoria);
+        gasto.setImporte(solicitud.getImporte());
+        gasto.setFecha(solicitud.getFecha());
+        gasto.setDescripcion(normalizar(solicitud.getDescripcion()));
+
+        gastoRepositorio.save(gasto);
+    }
+
+    public Gasto obtenerPropio(Long id) {
+        Usuario u = usuarioActualServicio.obtenerUsuarioActual();
+        return gastoRepositorio.findByIdAndUsuarioId(id, u.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Gasto no encontrado"));
     }
 
     private String normalizar(String s) {
