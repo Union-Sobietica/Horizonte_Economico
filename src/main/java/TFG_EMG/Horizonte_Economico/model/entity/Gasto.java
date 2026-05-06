@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * Entidad JPA que representa gasto dentro del modelo de datos.
+ */
 @Entity
 @Table(name = "gastos")
 public class Gasto {
@@ -30,8 +33,14 @@ public class Gasto {
     @Column(name = "descripcion", length = 200)
     private String descripcion;
 
+    /**
+     * Inicializa las dependencias necesarias para Gasto.
+     */
     public Gasto() {}
 
+    /**
+     * Inicializa las dependencias necesarias para Gasto.
+     */
     public Gasto(Usuario usuario, Categoria categoria, BigDecimal importe, LocalDate fecha, String descripcion) {
         this.usuario = usuario;
         this.categoria = categoria;
@@ -40,17 +49,53 @@ public class Gasto {
         this.descripcion = descripcion;
     }
 
+    /**
+     * Accede al dato usado por formularios, vistas o serializacion.
+     */
     public Long getId() { return id; }
+    /**
+     * Accede al dato usado por formularios, vistas o serializacion.
+     */
     public Usuario getUsuario() { return usuario; }
+    /**
+     * Accede al dato usado por formularios, vistas o serializacion.
+     */
     public Categoria getCategoria() { return categoria; }
+    /**
+     * Accede al dato usado por formularios, vistas o serializacion.
+     */
     public BigDecimal getImporte() { return importe; }
+    /**
+     * Accede al dato usado por formularios, vistas o serializacion.
+     */
     public LocalDate getFecha() { return fecha; }
+    /**
+     * Accede al dato usado por formularios, vistas o serializacion.
+     */
     public String getDescripcion() { return descripcion; }
 
+    /**
+     * Accede al dato usado por formularios, vistas o serializacion.
+     */
     public void setId(Long id) { this.id = id; }
+    /**
+     * Accede al dato usado por formularios, vistas o serializacion.
+     */
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+    /**
+     * Accede al dato usado por formularios, vistas o serializacion.
+     */
     public void setCategoria(Categoria categoria) { this.categoria = categoria; }
+    /**
+     * Accede al dato usado por formularios, vistas o serializacion.
+     */
     public void setImporte(BigDecimal importe) { this.importe = importe; }
+    /**
+     * Accede al dato usado por formularios, vistas o serializacion.
+     */
     public void setFecha(LocalDate fecha) { this.fecha = fecha; }
+    /**
+     * Accede al dato usado por formularios, vistas o serializacion.
+     */
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 }

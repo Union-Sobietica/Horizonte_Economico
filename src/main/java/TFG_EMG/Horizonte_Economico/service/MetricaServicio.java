@@ -1,9 +1,6 @@
 package TFG_EMG.Horizonte_Economico.service;
 
-import TFG_EMG.Horizonte_Economico.dto.CategoriaDistribucionDTO;
-import TFG_EMG.Horizonte_Economico.dto.ResumenFamiliarDTO;
-import TFG_EMG.Horizonte_Economico.dto.ResumenMensualDTO;
-import TFG_EMG.Horizonte_Economico.dto.CategoriaResumenDTO;
+import TFG_EMG.Horizonte_Economico.dto.*;
 import TFG_EMG.Horizonte_Economico.model.entity.Gasto;
 import TFG_EMG.Horizonte_Economico.model.entity.Ingreso;
 import TFG_EMG.Horizonte_Economico.model.entity.Usuario;
@@ -18,6 +15,9 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.*;
 
+/**
+ * Servicio de negocio encargado de coordinar las reglas de metrica.
+ */
 @Service
 @Transactional(readOnly = true)
 public class MetricaServicio {
@@ -27,6 +27,9 @@ public class MetricaServicio {
     private final GastoRepositorio gastoRepositorio;
     private final FamiliaServicio familiaServicio;
 
+    /**
+     * Inicializa las dependencias necesarias para MetricaServicio.
+     */
     public MetricaServicio(UsuarioActualServicio usuarioActualServicio,
                            IngresoRepositorio ingresoRepositorio,
                            GastoRepositorio gastoRepositorio,
@@ -37,6 +40,9 @@ public class MetricaServicio {
         this.familiaServicio = familiaServicio;
     }
 
+    /**
+     * Calcula y devuelve el resumen financiero solicitado.
+     */
     public ResumenMensualDTO resumenMensual(String mesYYYYMM) {
         YearMonth ym = parseMes(mesYYYYMM);
         Usuario u = usuarioActualServicio.obtenerUsuarioActual();
@@ -71,6 +77,9 @@ public class MetricaServicio {
         );
     }
 
+    /**
+     * Ejecuta la operacion distribucionGastos dentro del flujo de MetricaServicio.
+     */
     private List<CategoriaDistribucionDTO> distribucionGastos(List<Gasto> gastos, BigDecimal totalGastos) {
         Map<String, BigDecimal> porCategoria = new HashMap<>();
 
@@ -96,6 +105,9 @@ public class MetricaServicio {
         return lista;
     }
 
+    /**
+     * Calcula y devuelve el resumen financiero solicitado.
+     */
     public ResumenFamiliarDTO resumenFamiliar(String mesYYYYMM) {
         YearMonth ym = parseMes(mesYYYYMM);
         Usuario u = usuarioActualServicio.obtenerUsuarioActual();
@@ -132,6 +144,9 @@ public class MetricaServicio {
         );
     }
 
+    /**
+     * Calcula y devuelve el resumen financiero solicitado.
+     */
     private List<CategoriaResumenDTO> resumenPorCategoriasFamiliar(List<Ingreso> ingresos,
                                                                    List<Gasto> gastos,
                                                                    BigDecimal ingresosFamiliaresExtra) {
@@ -148,6 +163,9 @@ public class MetricaServicio {
         return resultado;
     }
 
+    /**
+     * Calcula y devuelve el resumen financiero solicitado.
+     */
     private List<CategoriaResumenDTO> resumenPorCategorias(List<Ingreso> ingresos, List<Gasto> gastos) {
         Map<String, BigDecimal> ingresosPorCategoria = new LinkedHashMap<>();
         Map<String, BigDecimal> gastosPorCategoria = new LinkedHashMap<>();
@@ -185,6 +203,9 @@ public class MetricaServicio {
         return resultado;
     }
 
+    /**
+     * Convierte el valor textual recibido en el tipo de fecha esperado.
+     */
     private YearMonth parseMes(String mesYYYYMM) {
         if (mesYYYYMM == null || mesYYYYMM.isBlank()) {
             return YearMonth.now();
@@ -192,7 +213,66 @@ public class MetricaServicio {
         return YearMonth.parse(mesYYYYMM.trim());
     }
 
+    /**
+     * Normaliza importes monetarios a dos decimales.
+     */
     private BigDecimal scale2(BigDecimal v) {
         return v.setScale(2, RoundingMode.HALF_UP);
     }
+
+    /**
+     * Calcula las estadisticas agregadas solicitadas.
+     */
+    public EstadisticasAnualesDTO estadisticasAnuales(int anio) {
+        Usuario u = usuarioActualServicio.obtenerUsuarioActual();
+
+        List<String> meses = new ArrayList<>();
+        List<BigDecimal> ingresosMes = new ArrayList<>();
+        List<BigDecimal> gastosMes = new ArrayList<>();
+
+        BigDecimal totalIngresos = BigDecimal.ZERO;
+        BigDecimal totalGastos = BigDecimal.ZERO;
+
+        for (int i = 1; i <= 12; i++) {
+            YearMonth ym = YearMonth.of(anio, i);
+
+            LocalDate desde = ym.atDay(1);
+            LocalDate hasta = ym.atEndOfMonth();
+
+            List<Ingreso> ingresos = ingresoRepositorio
+                    .findAllByUsuarioIdAndFechaBetweenOrderByFechaDesc(u.getId(), desde, hasta);
+
+            List<Gasto> gastos = gastoRepositorio
+                    .findAllByUsuarioIdAndFechaBetweenOrderByFechaDesc(u.getId(), desde, hasta);
+
+            BigDecimal totalIngMes = ingresos.stream()
+                    .map(Ingreso::getImporte)
+                    .filter(Objects::nonNull)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            BigDecimal totalGasMes = gastos.stream()
+                    .map(Gasto::getImporte)
+                    .filter(Objects::nonNull)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            meses.add(ym.getMonth()
+                    .getDisplayName(java.time.format.TextStyle.FULL, new java.util.Locale("es", "ES")));
+
+            ingresosMes.add(scale2(totalIngMes));
+            gastosMes.add(scale2(totalGasMes));
+
+            totalIngresos = totalIngresos.add(totalIngMes);
+            totalGastos = totalGastos.add(totalGasMes);
+        }
+
+        return new EstadisticasAnualesDTO(
+                anio,
+                meses,
+                ingresosMes,
+                gastosMes,
+                scale2(totalIngresos),
+                scale2(totalGastos)
+        );
+    }
+
 }

@@ -10,27 +10,42 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Servicio de negocio encargado de coordinar las reglas de categoria.
+ */
 @Service
 public class CategoriaServicio {
 
     private final CategoriaRepositorio categoriaRepositorio;
     private final UsuarioActualServicio usuarioActualServicio;
 
+    /**
+     * Inicializa las dependencias necesarias para CategoriaServicio.
+     */
     public CategoriaServicio(CategoriaRepositorio categoriaRepositorio, UsuarioActualServicio usuarioActualServicio) {
         this.categoriaRepositorio = categoriaRepositorio;
         this.usuarioActualServicio = usuarioActualServicio;
     }
 
+    /**
+     * Recupera la lista de datos solicitada para la vista o la API.
+     */
     public List<Categoria> listar() {
         Usuario u = usuarioActualServicio.obtenerUsuarioActual();
         return categoriaRepositorio.findAllByUsuarioIdOrderByNombreAsc(u.getId());
     }
 
+    /**
+     * Recupera la lista de datos solicitada para la vista o la API.
+     */
     public List<Categoria> listarPorTipo(TipoCategoria tipo) {
         Usuario u = usuarioActualServicio.obtenerUsuarioActual();
         return categoriaRepositorio.findAllByUsuarioIdAndTipoOrderByNombreAsc(u.getId(), tipo);
     }
 
+    /**
+     * Procesa la creacion del recurso recibido.
+     */
     @Transactional
     public void crear(CategoriaCrearSolicitud solicitud) {
         Usuario u = usuarioActualServicio.obtenerUsuarioActual();
@@ -43,6 +58,9 @@ public class CategoriaServicio {
         categoriaRepositorio.save(new Categoria(u, nombre, solicitud.getTipo()));
     }
 
+    /**
+     * Elimina el recurso indicado cuando pertenece al usuario autorizado.
+     */
     @Transactional
     public void borrar(Long id) {
         Usuario u = usuarioActualServicio.obtenerUsuarioActual();
@@ -51,6 +69,9 @@ public class CategoriaServicio {
         categoriaRepositorio.delete(c);
     }
 
+    /**
+     * Obtiene el recurso solicitado aplicando las validaciones necesarias.
+     */
     public Categoria obtenerPropia(Long categoriaId, Long usuarioId) {
         return categoriaRepositorio.findByIdAndUsuarioId(categoriaId, usuarioId)
                 .orElseThrow(() -> new IllegalArgumentException("Categoría no válida"));

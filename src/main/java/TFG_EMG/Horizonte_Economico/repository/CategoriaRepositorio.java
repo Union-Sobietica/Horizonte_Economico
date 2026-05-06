@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repositorio Spring Data para consultar y persistir categoria.
+ */
 public interface CategoriaRepositorio extends JpaRepository<Categoria, Long> {
     List<Categoria> findAllByUsuarioIdOrderByNombreAsc(Long usuarioId);
     List<Categoria> findAllByUsuarioIdAndTipoOrderByNombreAsc(Long usuarioId, TipoCategoria tipo);

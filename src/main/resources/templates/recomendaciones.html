@@ -8,6 +8,8 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
+
+<!-- Vista Thymeleaf: recomendaciones. Renderiza datos del modelo de Spring en HTML. -->
 <header class="header header-app">
     <div class="contenedor header-app-inner">
         <a href="/" class="brand-link">
@@ -39,7 +41,34 @@
         <form class="form" id="formRecomendaciones">
             <label class="label" for="mes">Mes</label>
             <input class="input" id="mes" name="mes" type="month" required/>
-            <button class="boton boton-primario" type="submit">Generar</button>
+
+            <div class="acciones">
+                <button class="boton boton-primario" type="button" onclick="generarRecomendacion('general', this)">
+                    Recomendación general
+                </button>
+
+                <button class="boton boton-secundario" type="button" onclick="generarRecomendacion('inversion', this)">
+                    Inversión
+                </button>
+
+                <button class="boton boton-secundario" type="button" onclick="generarRecomendacion('hogar', this)">
+                    Ahorro en hogar
+                </button>
+            </div>
+
+            <label class="label" for="promptPersonalizadoRecomendaciones">Prompt personalizado</label>
+            <textarea class="input textarea"
+                      id="promptPersonalizadoRecomendaciones"
+                      name="promptPersonalizado"
+                      rows="5"
+                      maxlength="1000"
+                      placeholder="Escribe aqui que quieres preguntarle a la IA"></textarea>
+
+            <div class="acciones">
+                <button class="boton boton-primario" type="button" onclick="generarRecomendacionPersonalizada(this)">
+                    Enviar prompt personalizado
+                </button>
+            </div>
         </form>
     </section>
 
@@ -63,54 +92,94 @@
 </main>
 
 <script>
-    const form = document.getElementById('formRecomendaciones');
     const estadoCarga = document.getElementById('estadoCarga');
     const bloqueResultado = document.getElementById('bloqueResultado');
     const bloqueError = document.getElementById('bloqueError');
     const mensajeError = document.getElementById('mensajeError');
     const resultadoMarkdown = document.getElementById('resultadoMarkdown');
+    const promptPersonalizadoRecomendaciones = document.getElementById('promptPersonalizadoRecomendaciones');
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    function mostrarError(mensaje) {
+        mensajeError.textContent = mensaje;
+        bloqueError.style.display = 'block';
+        bloqueResultado.style.display = 'none';
+        estadoCarga.style.display = 'none';
+    }
 
-      const boton = form.querySelector('button[type="submit"]');
+    async function obtenerMensajeError(response, mensajePorDefecto) {
+        try {
+            const data = await response.json();
+            return data.mensaje || mensajePorDefecto;
+        } catch (error) {
+            return mensajePorDefecto;
+        }
+    }
 
-      boton.disabled = true;
-      boton.textContent = 'Generando...';
+    function generarRecomendacionPersonalizada(botonPulsado) {
+        const promptPersonalizado = promptPersonalizadoRecomendaciones.value.trim();
 
-      const mes = document.getElementById('mes').value;
-
-      bloqueResultado.style.display = 'none';
-      bloqueError.style.display = 'none';
-      estadoCarga.style.display = 'block';
-      resultadoMarkdown.innerHTML = '';
-      mensajeError.textContent = '';
-
-      try {
-        const response = await fetch(`/api/v1/recomendaciones?mes=${encodeURIComponent(mes)}`, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('No se pudieron generar las recomendaciones.');
+        if (!promptPersonalizado) {
+            mostrarError('Debes escribir un prompt personalizado.');
+            return;
         }
 
-        const data = await response.json();
+        return generarRecomendacion('personalizado', botonPulsado, promptPersonalizado);
+    }
 
-        resultadoMarkdown.innerHTML = marked.parse(data.contenido || '');
-        bloqueResultado.style.display = 'block';
-      } catch (error) {
-        mensajeError.textContent = error.message || 'Ha ocurrido un error inesperado.';
-        bloqueError.style.display = 'block';
-      } finally {
-        estadoCarga.style.display = 'none';
-        boton.disabled = false;
-        boton.textContent = 'Generar';
-      }
-    });
+    async function generarRecomendacion(tipo, botonPulsado, promptPersonalizado = '') {
+        const mes = document.getElementById('mes').value;
+
+        if (!mes) {
+            mostrarError('Debes seleccionar un mes.');
+            return;
+        }
+
+        if (promptPersonalizado.length > 1000) {
+            mostrarError('El prompt personalizado no puede superar los 1000 caracteres.');
+            return;
+        }
+
+        const botones = document.querySelectorAll('#formRecomendaciones button');
+        botones.forEach(b => b.disabled = true);
+
+        const textoOriginal = botonPulsado.textContent;
+        botonPulsado.textContent = 'Generando...';
+
+        bloqueResultado.style.display = 'none';
+        bloqueError.style.display = 'none';
+        estadoCarga.style.display = 'block';
+        resultadoMarkdown.innerHTML = '';
+        mensajeError.textContent = '';
+
+        try {
+            const params = new URLSearchParams({ mes, tipo });
+            if (promptPersonalizado) {
+                params.append('promptPersonalizado', promptPersonalizado);
+            }
+
+            const response = await fetch(`/api/v1/recomendaciones?${params.toString()}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(await obtenerMensajeError(response, 'No se pudieron generar las recomendaciones.'));
+            }
+
+            const data = await response.json();
+            resultadoMarkdown.innerHTML = marked.parse(data.contenido || '');
+            bloqueResultado.style.display = 'block';
+        } catch (error) {
+            mensajeError.textContent = error.message || 'Ha ocurrido un error inesperado.';
+            bloqueError.style.display = 'block';
+        } finally {
+            estadoCarga.style.display = 'none';
+            botones.forEach(b => b.disabled = false);
+            botonPulsado.textContent = textoOriginal;
+        }
+    }
 </script>
 </body>
 </html>

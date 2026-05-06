@@ -9,6 +9,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repositorio Spring Data para consultar y persistir gasto.
+ */
 public interface GastoRepositorio extends JpaRepository<Gasto, Long> {
 
     @EntityGraph(attributePaths = {"categoria"})

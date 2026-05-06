@@ -29,7 +29,14 @@
 	<properties>
 		<java.version>17</java.version>
 	</properties>
+
+	<!-- Dependencias principales de Spring Boot, persistencia, seguridad, vistas, IA y exportacion Excel. -->
 	<dependencies>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>5.4.1</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -126,6 +133,7 @@
 	</dependencies>
 
 	<build>
+		<!-- Plugins de compilacion y empaquetado de la aplicacion Spring Boot. -->
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

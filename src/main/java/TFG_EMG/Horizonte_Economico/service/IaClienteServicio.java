@@ -9,6 +9,9 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Servicio de negocio encargado de coordinar las reglas de ia cliente.
+ */
 @Service
 public class IaClienteServicio {
 
@@ -23,6 +26,9 @@ public class IaClienteServicio {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
+    /**
+     * Genera la respuesta o documento solicitado a partir de los datos disponibles.
+     */
     public IaRespuestaDTO generar(String prompt) {
 
         String url = baseUrl + "/chat/completions";
