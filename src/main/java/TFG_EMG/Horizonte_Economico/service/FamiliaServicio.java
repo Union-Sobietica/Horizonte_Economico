@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Servicio de negocio encargado de coordinar las reglas de familia.
+ */
 @Service
 public class FamiliaServicio {
 
@@ -18,6 +21,9 @@ public class FamiliaServicio {
     private final FamiliaRepositorio familiaRepositorio;
     private final MiembroFamiliarRepositorio miembroRepositorio;
 
+    /**
+     * Inicializa las dependencias necesarias para FamiliaServicio.
+     */
     public FamiliaServicio(UsuarioActualServicio usuarioActualServicio,
                            FamiliaRepositorio familiaRepositorio,
                            MiembroFamiliarRepositorio miembroRepositorio) {
@@ -26,12 +32,18 @@ public class FamiliaServicio {
         this.miembroRepositorio = miembroRepositorio;
     }
 
+    /**
+     * Obtiene el recurso solicitado aplicando las validaciones necesarias.
+     */
     public Familia obtenerOCrearSiNoExiste() {
         Usuario u = usuarioActualServicio.obtenerUsuarioActual();
         return familiaRepositorio.findByUsuarioId(u.getId())
                 .orElseGet(() -> familiaRepositorio.save(new Familia(u, EstadoCivil.SOLTERO)));
     }
 
+    /**
+     * Procesa la actualizacion del recurso indicado.
+     */
     @Transactional
     public void actualizarFamilia(FamiliaActualizarSolicitud solicitud) {
         Familia f = obtenerOCrearSiNoExiste();
@@ -39,11 +51,17 @@ public class FamiliaServicio {
         familiaRepositorio.save(f);
     }
 
+    /**
+     * Recupera la lista de datos solicitada para la vista o la API.
+     */
     public List<MiembroFamiliar> listarMiembros() {
         Familia f = obtenerOCrearSiNoExiste();
         return miembroRepositorio.findAllByFamiliaIdOrderByTipoAscNombreAsc(f.getId());
     }
 
+    /**
+     * Procesa la creacion del recurso recibido.
+     */
     @Transactional
     public void crearMiembro(MiembroFamiliarCrearSolicitud solicitud) {
         Familia f = obtenerOCrearSiNoExiste();
@@ -52,6 +70,9 @@ public class FamiliaServicio {
         miembroRepositorio.save(new MiembroFamiliar(f, solicitud.getTipo(), nombre, ingreso));
     }
 
+    /**
+     * Elimina el recurso indicado cuando pertenece al usuario autorizado.
+     */
     @Transactional
     public void borrarMiembro(Long id) {
         Familia f = obtenerOCrearSiNoExiste();
@@ -60,6 +81,9 @@ public class FamiliaServicio {
         miembroRepositorio.delete(m);
     }
 
+    /**
+     * Ejecuta la operacion ingresosFamiliaresExtra dentro del flujo de FamiliaServicio.
+     */
     public BigDecimal ingresosFamiliaresExtra() {
         Familia f = obtenerOCrearSiNoExiste();
         return miembroRepositorio.findAllByFamiliaIdOrderByTipoAscNombreAsc(f.getId()).stream()
@@ -68,6 +92,9 @@ public class FamiliaServicio {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    /**
+     * Valida y normaliza el texto recibido antes de usarlo.
+     */
     private BigDecimal normalizarIngreso(BigDecimal v) {
         if (v == null) return null;
         if (v.compareTo(BigDecimal.ZERO) < 0) throw new IllegalArgumentException("El ingreso no puede ser negativo");

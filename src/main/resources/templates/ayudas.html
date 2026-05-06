@@ -7,6 +7,8 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
+
+<!-- Vista Thymeleaf: ayudas. Renderiza datos del modelo de Spring en HTML. -->
 <header class="header header-app">
   <div class="contenedor header-app-inner">
     <a href="/" class="brand-link">
@@ -32,51 +34,135 @@
 </header>
 
 <main class="contenedor">
-
   <section class="hero">
-    <button id="btnGenerar" class="boton boton-primario">
-      Analizar ayudas
-    </button>
+    <h2>Analizar ayudas</h2>
+
+    <form class="form" id="formAyudas">
+      <div class="acciones">
+        <button type="button" class="boton boton-primario" onclick="generarAyuda('general', this)">
+          Ayudas generales
+        </button>
+
+        <button type="button" class="boton boton-secundario" onclick="generarAyuda('estudios', this)">
+          Ayudas estudiantiles
+        </button>
+
+        <button type="button" class="boton boton-secundario" onclick="generarAyuda('hogar', this)">
+          Ayudas del hogar
+        </button>
+      </div>
+
+      <label class="label" for="promptPersonalizadoAyudas">Prompt personalizado</label>
+      <textarea class="input textarea"
+                id="promptPersonalizadoAyudas"
+                name="promptPersonalizado"
+                rows="5"
+                maxlength="1000"
+                placeholder="Escribe aqui que quieres preguntarle a la IA"></textarea>
+
+      <div class="acciones">
+        <button type="button" class="boton boton-primario" onclick="generarAyudaPersonalizada(this)">
+          Enviar prompt personalizado
+        </button>
+      </div>
+    </form>
   </section>
 
-  <section id="estadoCarga" style="display:none;">
+  <section class="hero" id="estadoCarga" style="display:none;">
+    <h2>Generando análisis</h2>
     <div class="loading-box">
       <div class="spinner"></div>
       <p>Analizando situación familiar...</p>
     </div>
   </section>
 
-  <section id="resultado" style="display:none;">
-    <div id="contenido" class="markdown-content"></div>
+  <section class="hero" id="bloqueError" style="display:none;">
+    <h2>Error</h2>
+    <p id="mensajeError" class="texto-error"></p>
   </section>
 
+  <section class="hero" id="resultado" style="display:none;">
+    <h2>Resultado</h2>
+    <div id="contenido" class="markdown-content"></div>
+  </section>
 </main>
 
 <script>
-  const btn = document.getElementById('btnGenerar');
   const estado = document.getElementById('estadoCarga');
   const resultado = document.getElementById('resultado');
   const contenido = document.getElementById('contenido');
+  const bloqueError = document.getElementById('bloqueError');
+  const mensajeError = document.getElementById('mensajeError');
+  const promptPersonalizadoAyudas = document.getElementById('promptPersonalizadoAyudas');
 
-  btn.addEventListener('click', async () => {
+  function mostrarError(mensaje) {
+    mensajeError.textContent = mensaje;
+    bloqueError.style.display = 'block';
+    resultado.style.display = 'none';
+    estado.style.display = 'none';
+  }
+
+  async function obtenerMensajeError(response, mensajePorDefecto) {
+    try {
+      const data = await response.json();
+      return data.mensaje || mensajePorDefecto;
+    } catch (error) {
+      return mensajePorDefecto;
+    }
+  }
+
+  function generarAyudaPersonalizada(botonPulsado) {
+    const promptPersonalizado = promptPersonalizadoAyudas.value.trim();
+
+    if (!promptPersonalizado) {
+      mostrarError('Debes escribir un prompt personalizado.');
+      return;
+    }
+
+    return generarAyuda('personalizado', botonPulsado, promptPersonalizado);
+  }
+
+  async function generarAyuda(tipo, botonPulsado, promptPersonalizado = '') {
+    if (promptPersonalizado.length > 1000) {
+      mostrarError('El prompt personalizado no puede superar los 1000 caracteres.');
+      return;
+    }
+
+    const botones = document.querySelectorAll('#formAyudas button');
+    botones.forEach(b => b.disabled = true);
+
+    const textoOriginal = botonPulsado.textContent;
+    botonPulsado.textContent = 'Generando...';
+
     estado.style.display = 'block';
     resultado.style.display = 'none';
-    btn.disabled = true;
+    bloqueError.style.display = 'none';
+    contenido.innerHTML = '';
+    mensajeError.textContent = '';
 
     try {
-      const res = await fetch('/api/v1/ayudas');
-      const data = await res.json();
+      const params = new URLSearchParams({ tipo });
+      if (promptPersonalizado) {
+        params.append('promptPersonalizado', promptPersonalizado);
+      }
 
+      const res = await fetch(`/api/v1/ayudas?${params.toString()}`);
+      if (!res.ok) {
+        throw new Error(await obtenerMensajeError(res, 'No se pudieron analizar las ayudas.'));
+      }
+
+      const data = await res.json();
       contenido.innerHTML = marked.parse(data.contenido || '');
       resultado.style.display = 'block';
     } catch (e) {
-      contenido.innerHTML = "Error al generar ayudas";
-      resultado.style.display = 'block';
+      mensajeError.textContent = e.message || 'Error al generar ayudas.';
+      bloqueError.style.display = 'block';
     } finally {
       estado.style.display = 'none';
-      btn.disabled = false;
+      botones.forEach(b => b.disabled = false);
+      botonPulsado.textContent = textoOriginal;
     }
-  });
+  }
 </script>
 </body>
 </html>

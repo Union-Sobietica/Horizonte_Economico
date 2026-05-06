@@ -5,6 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+/**
+ * Transporta datos de registro entre formularios, controladores y servicios.
+ */
 public class RegistroSolicitud {
 
     @NotBlank(message = "El email es obligatorio")
@@ -23,11 +26,29 @@ public class RegistroSolicitud {
     @NotBlank(message = "Repite la contraseña")
     private String passwordRepetida;
 
+    /**
+     * Accede al dato usado por formularios, vistas o serializacion.
+     */
     public String getEmail() { return email; }
+    /**
+     * Accede al dato usado por formularios, vistas o serializacion.
+     */
     public String getPassword() { return password; }
+    /**
+     * Accede al dato usado por formularios, vistas o serializacion.
+     */
     public String getPasswordRepetida() { return passwordRepetida; }
 
+    /**
+     * Accede al dato usado por formularios, vistas o serializacion.
+     */
     public void setEmail(String email) { this.email = email; }
+    /**
+     * Accede al dato usado por formularios, vistas o serializacion.
+     */
     public void setPassword(String password) { this.password = password; }
+    /**
+     * Accede al dato usado por formularios, vistas o serializacion.
+     */
     public void setPasswordRepetida(String passwordRepetida) { this.passwordRepetida = passwordRepetida; }
 }

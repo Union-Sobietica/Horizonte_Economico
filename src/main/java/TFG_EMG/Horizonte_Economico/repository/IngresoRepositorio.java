@@ -9,6 +9,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repositorio Spring Data para consultar y persistir ingreso.
+ */
 public interface IngresoRepositorio extends JpaRepository<Ingreso, Long> {
 
     @EntityGraph(attributePaths = {"categoria"})

@@ -10,9 +10,15 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Centraliza el manejo de errores relacionado con api exception handler.
+ */
 @RestControllerAdvice(basePackages = "TFG_EMG.Horizonte_Economico.controller.api")
 public class ApiExceptionHandler {
 
+    /**
+     * Transforma la excepcion recibida en una respuesta controlada.
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> manejarIllegalArgument(IllegalArgumentException ex) {
         Map<String, Object> body = new HashMap<>();
@@ -22,6 +28,9 @@ public class ApiExceptionHandler {
         return ResponseEntity.badRequest().body(body);
     }
 
+    /**
+     * Transforma la excepcion recibida en una respuesta controlada.
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> manejarValidacion(MethodArgumentNotValidException ex) {
         Map<String, Object> errores = new HashMap<>();
@@ -37,6 +46,9 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    /**
+     * Transforma la excepcion recibida en una respuesta controlada.
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> manejarGeneral(Exception ex) {
         Map<String, Object> body = new HashMap<>();

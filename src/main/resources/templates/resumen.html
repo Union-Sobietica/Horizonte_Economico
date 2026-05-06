@@ -8,6 +8,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+
+<!-- Vista Thymeleaf: resumen. Renderiza datos del modelo de Spring en HTML. -->
 <header class="header header-app">
     <div class="contenedor header-app-inner">
         <a href="/" class="brand-link">
@@ -74,6 +76,7 @@
     </section>
 </main>
 
+<!-- Datos Thymeleaf usados por JavaScript para graficas o respuestas dinamicas. -->
 <script th:inline="javascript">
     const distribucion = /*[[${resumen.distribucionGastos}]]*/ [];
     const labelsPie = distribucion.map(x => x.categoria);

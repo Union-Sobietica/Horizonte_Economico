@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Estadísticas</title>
+    <link rel="stylesheet" href="/css/app.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- Vista Thymeleaf: estadisticas. Renderiza datos del modelo de Spring en HTML. -->
+
+<header class="header header-app">
+    <div class="contenedor header-app-inner">
+        <a href="/" class="brand-link">
+            <div class="brand-logo-wrap brand-logo-wrap-app">
+                <img src="/images/logo-horizonte.png" class="brand-logo"/>
+            </div>
+        </a>
+
+        <div class="header-app-title">
+            <h1>Horizonte Económico</h1>
+            <p>Estadísticas anuales</p>
+        </div>
+
+        <nav class="nav nav-app">
+            <a class="link link-app" href="/">Inicio</a>
+            <a class="link link-app" href="/usuario/resumen">Resumen</a>
+            <a class="link link-app" href="/usuario/gastos">Gastos</a>
+            <a class="link link-app" href="/usuario/ingresos">Ingresos</a>
+            <form th:action="@{/logout}" method="post">
+                <button class="boton boton-peligro">Cerrar sesión</button>
+            </form>
+        </nav>
+    </div>
+</header>
+
+<main class="contenedor">
+
+    <section class="hero">
+        <h2>Año</h2>
+
+        <form method="get" action="/usuario/estadisticas">
+            <input class="input" type="number" name="anio" th:value="${anioSeleccionado}" min="2000"/>
+            <button class="boton boton-primario">Actualizar</button>
+        </form>
+    </section>
+
+    <section class="grid estadisticas-grid">
+        <article class="card">
+            <h3>Total ingresos</h3>
+            <p th:text="${estadisticas.totalIngresos}"></p>
+        </article>
+
+        <article class="card">
+            <h3>Total gastos</h3>
+            <p th:text="${estadisticas.totalGastos}"></p>
+        </article>
+
+        <article class="card card-descarga">
+            <h3>Exportar</h3>
+
+            <a class="boton boton-primario"
+               th:href="@{/usuario/estadisticas/excel(anio=${anioSeleccionado})}">
+                Descargar Excel
+            </a>
+        </article>
+    </section>
+
+    <section class="hero">
+        <h2>Evolución mensual</h2>
+        <div class="chart-box">
+            <canvas id="grafico"></canvas>
+        </div>
+    </section>
+
+</main>
+
+<!-- Datos Thymeleaf usados por JavaScript para graficas o respuestas dinamicas. -->
+<script th:inline="javascript">
+    const meses = /*[[${estadisticas.meses}]]*/ [];
+    const ingresos = /*[[${estadisticas.ingresos}]]*/ [];
+    const gastos = /*[[${estadisticas.gastos}]]*/ [];
+
+    new Chart(document.getElementById('grafico'), {
+        type: 'line',
+        data: {
+            labels: meses,
+            datasets: [
+                {
+                    label: 'Ingresos',
+                    data: ingresos.map(Number),
+                    borderColor: 'rgba(16,185,129,1)',
+                    backgroundColor: 'rgba(16,185,129,0.2)',
+                    tension: 0.3
+                },
+                {
+                    label: 'Gastos',
+                    data: gastos.map(Number),
+                    borderColor: 'rgba(220,38,38,1)',
+                    backgroundColor: 'rgba(220,38,38,0.2)',
+                    tension: 0.3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

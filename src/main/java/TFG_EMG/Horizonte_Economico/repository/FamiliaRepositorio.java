@@ -5,6 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
+/**
+ * Repositorio Spring Data para consultar y persistir familia.
+ */
 public interface FamiliaRepositorio extends JpaRepository<Familia, Long> {
     Optional<Familia> findByUsuarioId(Long usuarioId);
 }

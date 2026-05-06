@@ -10,6 +10,8 @@
 </head>
 <body class="landing-page">
 
+<!-- Vista Thymeleaf: index. Renderiza datos del modelo de Spring en HTML. -->
+
 <header class="header header-landing">
     <div class="contenedor header-landing-inner">
         <a href="/" class="brand-link">
@@ -23,6 +25,7 @@
             </div>
 
             <div sec:authorize="isAuthenticated()" class="nav-auth">
+                <a class="link" href="/usuario/estadisticas">Estadísticas</a>
                 <a class="link" href="/usuario/resumen">Resumen</a>
                 <a class="link" href="/usuario/familia">Familia</a>
                 <a class="link" href="/usuario/recomendaciones">Recomendaciones</a>
