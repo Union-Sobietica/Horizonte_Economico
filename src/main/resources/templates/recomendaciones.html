@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Recomendaciones inteligentes</title>
-    <link rel="stylesheet" href="/css/app.css"/>
+    <th:block th:replace="~{fragments/head :: assets}"></th:block>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
@@ -19,15 +19,14 @@
         </a>
 
         <div class="header-app-title">
-            <h1>Horizonte Económico</h1>
-            <p>Recomendaciones inteligentes</p>
+            <h1>Recomendaciones inteligentes</h1>
         </div>
 
         <nav class="nav nav-app">
             <a class="link link-app" href="/">Inicio</a>
-            <a class="link link-app" href="/usuario/resumen">Resumen individual</a>
+            <a class="link link-app" href="/usuario/resumen">Resumen</a>
             <a class="link link-app" href="/usuario/resumen-familia">Resumen familiar</a>
-            <form action="/logout" method="post" class="form-inline">
+            <form th:action="@{/logout}" method="post" class="form-inline">
                 <button class="boton boton-peligro" type="submit">Cerrar sesión</button>
             </form>
         </nav>

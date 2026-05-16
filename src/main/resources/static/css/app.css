@@ -937,10 +937,14 @@ body {
 
 .header-app-inner {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: minmax(180px, 1fr) auto minmax(180px, 1fr);
     align-items: center;
     gap: 18px;
     min-height: 96px;
+}
+
+.header-app-inner .brand-link {
+    justify-self: start;
 }
 
 .brand-logo-wrap-app {
@@ -955,6 +959,8 @@ body {
     font-size: 24px;
     line-height: 1.1;
     color: var(--texto);
+    text-align: center;
+    white-space: nowrap;
 }
 
 .header-app-title p {
@@ -968,7 +974,18 @@ body {
     align-items: center;
     justify-content: flex-end;
     gap: 10px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    justify-self: end;
+}
+
+.nav-app form {
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.nav-app .boton {
+    white-space: nowrap;
 }
 
 .link-app {
@@ -1139,6 +1156,8 @@ select.input:focus {
 
     .nav-app {
         justify-content: flex-start;
+        justify-self: start;
+        flex-wrap: wrap;
     }
 
     .grid {
@@ -1158,6 +1177,8 @@ select.input:focus {
 
     .header-app-title h1 {
         font-size: 21px;
+        text-align: left;
+        white-space: normal;
     }
 
     .tabla {

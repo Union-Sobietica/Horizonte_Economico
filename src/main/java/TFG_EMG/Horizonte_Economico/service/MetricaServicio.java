@@ -229,6 +229,7 @@ public class MetricaServicio {
         List<String> meses = new ArrayList<>();
         List<BigDecimal> ingresosMes = new ArrayList<>();
         List<BigDecimal> gastosMes = new ArrayList<>();
+        List<List<CategoriaResumenDTO>> resumenesMensuales = new ArrayList<>();
 
         BigDecimal totalIngresos = BigDecimal.ZERO;
         BigDecimal totalGastos = BigDecimal.ZERO;
@@ -260,6 +261,7 @@ public class MetricaServicio {
 
             ingresosMes.add(scale2(totalIngMes));
             gastosMes.add(scale2(totalGasMes));
+            resumenesMensuales.add(resumenPorCategorias(ingresos, gastos));
 
             totalIngresos = totalIngresos.add(totalIngMes);
             totalGastos = totalGastos.add(totalGasMes);
@@ -270,6 +272,7 @@ public class MetricaServicio {
                 meses,
                 ingresosMes,
                 gastosMes,
+                resumenesMensuales,
                 scale2(totalIngresos),
                 scale2(totalGastos)
         );

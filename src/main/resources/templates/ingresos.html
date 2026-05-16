@@ -4,7 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Ingresos</title>
-    <link rel="stylesheet" href="/css/app.css"/>
+    <th:block th:replace="~{fragments/head :: assets}"></th:block>
 </head>
 <body>
 
@@ -18,16 +18,16 @@
         </a>
 
         <div class="header-app-title">
-            <h1>Horizonte Económico</h1>
-            <p>Ingresos</p>
+            <h1>Ingresos</h1>
         </div>
 
         <nav class="nav nav-app">
             <a class="link link-app" href="/">Inicio</a>
-            <a class="link link-app" href="/usuario/resumen">Resumen mensual</a>
+            <a class="link link-app" href="/usuario/resumen">Resumen</a>
             <a class="link link-app" href="/usuario/resumen-familia">Resumen familiar</a>
             <a class="link link-app" href="/usuario/categorias">Categorías</a>
             <a class="link link-app" href="/usuario/gastos">Gastos</a>
+            <a class="link link-app" href="/usuario/ingresos">Ingresos</a>
             <form th:action="@{/logout}" method="post" class="form-inline">
                 <button class="boton boton-peligro" type="submit">Cerrar sesión</button>
             </form>

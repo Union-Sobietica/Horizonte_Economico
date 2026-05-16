@@ -67,7 +67,6 @@ public class SeguridadConfig {
                         /**
                          * Endpoints abiertos en desarrollo para documentación y monitorización
                          */
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/actuator/health", "/actuator/info", "/actuator/metrics", "/actuator/metrics/**").permitAll()
 
                         /**
@@ -86,7 +85,6 @@ public class SeguridadConfig {
                          * Zona de administración: solo usuarios con rol ADMIN
                          */
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
 
                         /**
                          * El resto de rutas requieren usuario autenticado

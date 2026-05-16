@@ -4,20 +4,29 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Error</title>
-    <link rel="stylesheet" href="/css/app.css"/>
+    <th:block th:replace="~{fragments/head :: assets}"></th:block>
 </head>
 <body>
 
 <!-- Vista Thymeleaf: error-personalizado. Renderiza datos del modelo de Spring en HTML. -->
-<header class="header">
-    <div class="contenedor">
-        <div class="marca">
-            <div class="logo">HE</div>
-            <div class="titulo">
-                <h1>Horizonte Económico</h1>
-                <p>Error</p>
+<header class="header header-app">
+    <div class="contenedor header-app-inner">
+        <a href="/" class="brand-link">
+            <div class="brand-logo-wrap brand-logo-wrap-app">
+                <img src="/images/logo-horizonte.png" alt="Horizonte Económico" class="brand-logo"/>
             </div>
+        </a>
+
+        <div class="header-app-title">
+            <h1>Error</h1>
         </div>
+
+        <nav class="nav nav-app">
+            <a class="link link-app" href="/">Inicio</a>
+            <form th:action="@{/logout}" method="post" class="form-inline">
+                <button class="boton boton-peligro" type="submit">Cerrar sesión</button>
+            </form>
+        </nav>
     </div>
 </header>
 
