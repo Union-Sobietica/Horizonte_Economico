@@ -1,6 +1,7 @@
 package TFG_EMG.Horizonte_Economico.dto;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -12,6 +13,7 @@ public class EstadisticasAnualesDTO {
     private List<String> meses;
     private List<BigDecimal> ingresos;
     private List<BigDecimal> gastos;
+    private List<List<CategoriaResumenDTO>> resumenesMensuales;
     private BigDecimal totalIngresos;
     private BigDecimal totalGastos;
 
@@ -24,10 +26,24 @@ public class EstadisticasAnualesDTO {
                                   List<BigDecimal> gastos,
                                   BigDecimal totalIngresos,
                                   BigDecimal totalGastos) {
+        this(anio, meses, ingresos, gastos, Collections.emptyList(), totalIngresos, totalGastos);
+    }
+
+    /**
+     * Inicializa las dependencias necesarias para EstadisticasAnualesDTO.
+     */
+    public EstadisticasAnualesDTO(int anio,
+                                  List<String> meses,
+                                  List<BigDecimal> ingresos,
+                                  List<BigDecimal> gastos,
+                                  List<List<CategoriaResumenDTO>> resumenesMensuales,
+                                  BigDecimal totalIngresos,
+                                  BigDecimal totalGastos) {
         this.anio = anio;
         this.meses = meses;
         this.ingresos = ingresos;
         this.gastos = gastos;
+        this.resumenesMensuales = resumenesMensuales;
         this.totalIngresos = totalIngresos;
         this.totalGastos = totalGastos;
     }
@@ -48,6 +64,10 @@ public class EstadisticasAnualesDTO {
      * Accede al dato usado por formularios, vistas o serializacion.
      */
     public List<BigDecimal> getGastos() { return gastos; }
+    /**
+     * Accede al dato usado por formularios, vistas o serializacion.
+     */
+    public List<List<CategoriaResumenDTO>> getResumenesMensuales() { return resumenesMensuales; }
     /**
      * Accede al dato usado por formularios, vistas o serializacion.
      */

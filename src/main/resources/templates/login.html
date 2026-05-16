@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Login - Horizonte Económico</title>
-    <link rel="stylesheet" href="/css/app.css"/>
+    <th:block th:replace="~{fragments/head :: assets}"></th:block>
 </head>
 <body>
 
@@ -18,8 +18,7 @@
         </a>
 
         <div class="header-app-title">
-            <h1>Horizonte Económico</h1>
-            <p>Acceso</p>
+            <h1>Iniciar sesión</h1>
         </div>
 
         <nav class="nav nav-app">

@@ -36,7 +36,7 @@ public class IaClienteServicio {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(apiKey);
-        headers.add("HTTP-Referer", "http://localhost:8087");
+        headers.add("HTTP-Referer", "http://localhost:8089");
         headers.add("X-Title", "Horizonte Economico");
 
         Map<String, Object> body = Map.of(

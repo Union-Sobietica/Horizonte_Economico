@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Horizonte Económico</title>
     <meta name="description" content="Aplicación web para la gestión de finanzas del hogar, análisis económico familiar y recomendaciones inteligentes."/>
-    <link rel="stylesheet" href="/css/app.css"/>
+    <th:block th:replace="~{fragments/head :: assets}"></th:block>
 </head>
 <body class="landing-page">
 
@@ -212,7 +212,6 @@
 
         <div class="footer-links">
             <a sec:authorize="hasRole('ADMIN')" href="/admin">Administración</a>
-            <a href="/swagger-ui/index.html">API Docs</a>
             <a href="/actuator/health">Health</a>
         </div>
     </div>
